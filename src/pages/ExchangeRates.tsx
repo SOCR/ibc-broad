@@ -13,12 +13,12 @@ import {
   ResponsiveContainer
 } from "recharts";
 import { exchangeRateData } from "@/data/marketData";
-import { DollarSign, Euro, PoundSterling, CircleYen, CandlestickChart } from "lucide-react";
+import { DollarSign, Euro, PoundSterling, Yen, CandlestickChart } from "lucide-react";
 
 const currencies = [
   { code: "eur", name: "Euro (EUR)", icon: Euro, color: "#1E88E5" },
   { code: "gbp", name: "British Pound (GBP)", icon: PoundSterling, color: "#D81B60" },
-  { code: "jpy", name: "Japanese Yen (JPY)", icon: CircleYen, color: "#8E24AA" },
+  { code: "jpy", name: "Japanese Yen (JPY)", icon: Yen, color: "#8E24AA" },
   { code: "cad", name: "Canadian Dollar (CAD)", icon: DollarSign, color: "#43A047" },
   { code: "aud", name: "Australian Dollar (AUD)", icon: DollarSign, color: "#F4511E" },
   { code: "cny", name: "Chinese Yuan (CNY)", icon: DollarSign, color: "#FFB300" },

@@ -233,7 +233,6 @@ const EconomicIndicators: React.FC = () => {
                         dataKey="growth" 
                         name={`${country} Growth %`} 
                         fill={COLORS[index % COLORS.length]}
-                        data={gdpGrowthData.filter(item => item.country === country)}
                       />
                     ))}
                   </BarChart>
