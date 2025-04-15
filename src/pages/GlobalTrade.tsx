@@ -257,20 +257,36 @@ const GlobalTrade: React.FC = () => {
             <CardContent className="h-80">
               <ChartContainer config={{}} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <Area 
-                    type="monotone" 
-                    dataKey="imports" 
-                    name="Imports" 
-                    fill="#7A9B76" 
-                    stroke="#7A9B76"
-                  />
-                </ResponsiveContainer>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
+                  <LineChart
+                    data={internationalTradeData}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="year" />
+                    <YAxis />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Legend />
+                    {regions.map((region, index) => (
+                      <Line 
+                        key={region}
+                        type="monotone" 
+                        dataKey="imports" 
+                        name={`${region} Imports`} 
+                        stroke={index === 0 ? "#18453B" : index === 1 ? "#7A9B76" : "#A2AAAD"} 
+                        strokeWidth={region === selectedRegion || selectedRegion === "all" ? 2 : 1} 
+                        data={internationalTradeData.filter(item => item.country === region)}
+                        dot={{ r: 3 }} 
+                        activeDot={{ r: 5 }} 
+                        opacity={region === selectedRegion || selectedRegion === "all" ? 1 : 0.5}
+                    />
+                  ))}
+                </LineChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+      </TabsContent>
+    </Tabs>
   );
 };
 
