@@ -123,13 +123,13 @@ const ExchangeRates: React.FC = () => {
     // Generate forecasts for each currency
     const forecastedData = [...filteredData];
     currencies.forEach(currency => {
-      const currencyForecast = createMultiMethodForecast(
-        filteredData.map(item => ({ 
-          date: item.date, 
-          value: item[currency.code as keyof typeof item] as number 
-        })),
-        forecastYears
-      ).linear;
+      const dataPoints = filteredData.map(item => ({ 
+        date: item.date, 
+        value: item[currency.code as keyof typeof item] as number 
+      }));
+      
+      // Fix here: Pass correct type to createMultiMethodForecast
+      const currencyForecast = createMultiMethodForecast(dataPoints, forecastYears).linear;
       
       // Merge forecasted data
       currencyForecast.forEach(item => {

@@ -99,6 +99,45 @@ function generateAggressiveScenario(profile: FinancialProfile): FinancialScenari
   };
 }
 
+// Add a custom scenario generator for more personalized planning
+export function generateCustomScenario(
+  profile: FinancialProfile, 
+  params: {
+    name: string;
+    description: string;
+    investmentReturn: number;
+    inflationRate: number;
+    taxRate: number;
+    retirementSavingRateMultiplier: number;
+    additionalIncomePercentage: number;
+    expenseReductionPercentage: number;
+  }
+): FinancialScenario {
+  const retirementSavingRate = profile.goals.retirement.savingRate * params.retirementSavingRateMultiplier;
+  const additionalIncome = profile.income * params.additionalIncomePercentage;
+  const expenseReduction = profile.monthlyExpenses * params.expenseReductionPercentage;
+  
+  return {
+    id: "custom",
+    name: params.name,
+    description: params.description,
+    investmentReturn: params.investmentReturn,
+    inflationRate: params.inflationRate,
+    taxRate: params.taxRate,
+    retirementSavingRate,
+    additionalIncome,
+    expenseReduction,
+    results: calculateResults(profile, {
+      investmentReturn: params.investmentReturn,
+      inflationRate: params.inflationRate,
+      taxRate: params.taxRate,
+      retirementSavingRate,
+      additionalIncome,
+      expenseReduction
+    })
+  };
+}
+
 interface CalculationParams {
   investmentReturn: number;
   inflationRate: number;
@@ -116,6 +155,8 @@ function calculateResults(profile: FinancialProfile, params: CalculationParams) 
   let currentAssets = profile.assets.cash + profile.assets.investments;
   let netWorthOverTime: Array<{year: number, value: number}> = [];
   let savingsOverTime: Array<{year: number, value: number}> = [];
+  let incomeOverTime: Array<{year: number, value: number}> = [];
+  let expensesOverTime: Array<{year: number, value: number}> = [];
   
   // Initialize net worth with current assets minus debts
   const totalDebts = profile.debts.mortgage + profile.debts.studentLoans + 
@@ -123,54 +164,134 @@ function calculateResults(profile: FinancialProfile, params: CalculationParams) 
   let netWorth = currentAssets + profile.assets.realEstate + profile.assets.other - totalDebts;
   
   // Annual savings (including retirement savings rate and expense reduction)
-  const totalAnnualIncome = profile.income + params.additionalIncome;
-  const monthlyExpensesAfterReduction = profile.monthlyExpenses - params.expenseReduction;
-  const annualExpenses = monthlyExpensesAfterReduction * 12;
-  const annualSavings = (totalAnnualIncome * (1 - params.taxRate)) - annualExpenses;
+  let currentIncome = profile.income + params.additionalIncome;
+  let monthlyExpensesAfterReduction = profile.monthlyExpenses - params.expenseReduction;
+  let annualExpenses = monthlyExpensesAfterReduction * 12;
+  let annualSavings = (currentIncome * (1 - params.taxRate)) - annualExpenses;
   
   // Project for each year until retirement
   for (let year = 0; year <= yearsUntilRetirement; year++) {
-    // Record the current year's net worth and savings
+    // Record the current year's values
     netWorthOverTime.push({ year: profile.age + year, value: netWorth });
     savingsOverTime.push({ year: profile.age + year, value: currentAssets });
+    incomeOverTime.push({ year: profile.age + year, value: currentIncome });
+    expensesOverTime.push({ year: profile.age + year, value: annualExpenses });
     
     // Update for next year
     currentAssets = currentAssets * (1 + params.investmentReturn) + annualSavings;
     
-    // Adjust for inflation in expenses and income
+    // Adjust for inflation and modest income growth
     const inflationFactor = Math.pow(1 + params.inflationRate, year);
+    const incomeGrowthFactor = 1 + (0.02 + params.inflationRate); // 2% real income growth plus inflation
+    
+    // Update income and expenses for next year
+    currentIncome = profile.income * Math.pow(incomeGrowthFactor, year + 1) + params.additionalIncome;
+    monthlyExpensesAfterReduction = (profile.monthlyExpenses * inflationFactor) - params.expenseReduction;
+    annualExpenses = monthlyExpensesAfterReduction * 12;
+    annualSavings = (currentIncome * (1 - params.taxRate)) - annualExpenses;
     
     // Simplified debt reduction (assuming steady paydown)
     const remainingDebtRatio = Math.max(0, 1 - year / (yearsUntilRetirement * 0.8));
     const currentDebts = totalDebts * remainingDebtRatio;
     
-    // Update net worth
-    netWorth = currentAssets + (profile.assets.realEstate * inflationFactor) + 
-               (profile.assets.other * inflationFactor) - currentDebts;
+    // Update net worth with appreciation for real estate
+    const realEstateValue = profile.assets.realEstate * Math.pow(1 + 0.04, year); // 4% annual real estate appreciation
+    netWorth = currentAssets + realEstateValue + (profile.assets.other * inflationFactor) - currentDebts;
   }
   
   // Calculate retirement income (assuming 4% withdrawal rate)
   const retirementBalance = currentAssets;
   const retirementIncome = retirementBalance * 0.04;
   
+  // Project retirement years
+  const retirementYears = profile.lifeExpectancy - profile.retirementAge;
+  let retirementNetWorthOverTime: Array<{year: number, value: number}> = [];
+  let retirementAssetsOverTime: Array<{year: number, value: number}> = [];
+  
+  let retirementAssets = retirementBalance;
+  let currentRetirementNetWorth = netWorth;
+  
+  for (let year = 0; year <= retirementYears; year++) {
+    const currentYear = profile.retirementAge + year;
+    retirementNetWorthOverTime.push({ year: currentYear, value: currentRetirementNetWorth });
+    retirementAssetsOverTime.push({ year: currentYear, value: retirementAssets });
+    
+    // Calculate withdrawal adjusted for inflation
+    const inflationFactor = Math.pow(1 + params.inflationRate, year);
+    const annualWithdrawal = retirementIncome * 12 * inflationFactor;
+    
+    // Update retirement assets
+    retirementAssets = Math.max(0, (retirementAssets - annualWithdrawal) * (1 + params.investmentReturn * 0.8)); // Lower returns in retirement (more conservative)
+    
+    // Update real estate value
+    const realEstateValue = profile.assets.realEstate * Math.pow(1 + 0.03, yearsUntilRetirement + year); // Slower real estate growth in retirement
+    
+    // Update net worth
+    currentRetirementNetWorth = retirementAssets + realEstateValue;
+  }
+  
   // Calculate education savings
   let collegeBalance = 0;
+  let educationFundingGap = 0;
+  let educationSavingsOverTime: Array<{year: number, value: number}> = [];
+  
   if (profile.goals.education.children > 0) {
     // Calculate college savings based on children and saving rate
     const educationSavingRate = profile.goals.education.savingRate;
     const averageYearsUntilCollege = profile.goals.education.yearsUntilCollege.reduce((sum, year) => sum + year, 0) / 
                                     profile.goals.education.yearsUntilCollege.length;
     
-    // Simple estimation of college savings
-    collegeBalance = educationSavingRate * 12 * averageYearsUntilCollege * 
-                    Math.pow(1 + params.investmentReturn, averageYearsUntilCollege);
+    let currentEducationSavings = 0;
+    const yearsToProject = Math.max(...profile.goals.education.yearsUntilCollege) + 4; // Project through college years
+    
+    // Total education cost per child (4 years)
+    const totalEducationCostPerChild = profile.goals.education.estimatedCostPerYear * 4;
+    const totalEducationCost = totalEducationCostPerChild * profile.goals.education.children;
+    
+    // Project education savings
+    for (let year = 0; year <= yearsToProject; year++) {
+      educationSavingsOverTime.push({
+        year: profile.age + year,
+        value: currentEducationSavings
+      });
+      
+      // Check if any children start college this year
+      const childrenStarting = profile.goals.education.yearsUntilCollege.filter(y => y === year).length;
+      let yearlyWithdrawal = 0;
+      
+      if (childrenStarting > 0) {
+        yearlyWithdrawal = childrenStarting * profile.goals.education.estimatedCostPerYear;
+      }
+      
+      // Add ongoing education costs for kids already in college
+      for (let i = 1; i < 4; i++) { // Check previous 3 years
+        const childrenInYear = profile.goals.education.yearsUntilCollege.filter(y => y === year - i && year - i >= 0).length;
+        if (childrenInYear > 0) {
+          yearlyWithdrawal += childrenInYear * profile.goals.education.estimatedCostPerYear;
+        }
+      }
+      
+      // Update education savings
+      currentEducationSavings = Math.max(0, (currentEducationSavings - yearlyWithdrawal) * 
+                              (1 + params.investmentReturn * 0.7) + (educationSavingRate * 12));
+    }
+    
+    // Final college balance and gap
+    collegeBalance = currentEducationSavings;
+    educationFundingGap = Math.max(0, totalEducationCost - collegeBalance);
   }
   
   return {
     retirementBalance,
     retirementIncome,
     collegeBalance,
+    educationFundingGap,
     netWorthOverTime,
-    savingsOverTime
+    savingsOverTime,
+    incomeOverTime,
+    expensesOverTime,
+    retirementNetWorthOverTime,
+    retirementAssetsOverTime,
+    educationSavingsOverTime
   };
 }
