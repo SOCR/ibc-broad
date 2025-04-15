@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/toggle-group";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { generateTimeSeriesTorecast } from "@/utils/forecasting";
+import { createMultiMethodForecast } from "@/utils/forecasting";
 
 const currencies = [
   { code: "eur", name: "Euro (EUR)", icon: Euro, color: "#1E88E5" },
@@ -123,14 +123,13 @@ const ExchangeRates: React.FC = () => {
     // Generate forecasts for each currency
     const forecastedData = [...filteredData];
     currencies.forEach(currency => {
-      const currencyForecast = generateTimeSeriesTorecast(
+      const currencyForecast = createMultiMethodForecast(
         filteredData.map(item => ({ 
           date: item.date, 
           value: item[currency.code as keyof typeof item] as number 
         })),
-        forecastMethod,
         forecastYears
-      ).filter(item => item.isForecasted);
+      ).linear;
       
       // Merge forecasted data
       currencyForecast.forEach(item => {
