@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -258,29 +257,13 @@ const GlobalTrade: React.FC = () => {
             <CardContent className="h-80">
               <ChartContainer config={{}} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart
-                    data={internationalTradeData}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="year" />
-                    <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Legend />
-                    {regions.map((region, index) => (
-                      <Area 
-                        key={region}
-                        type="monotone" 
-                        dataKey="imports" 
-                        name={`${region} Imports`} 
-                        fill={index === 0 ? "#18453B" : index === 1 ? "#7A9B76" : "#A2AAAD"} 
-                        stroke={index === 0 ? "#18453B" : index === 1 ? "#7A9B76" : "#A2AAAD"} 
-                        data={internationalTradeData.filter(item => item.country === region)}
-                        fillOpacity={0.6}
-                        opacity={region === selectedRegion || selectedRegion === "all" ? 1 : 0.5}
-                      />
-                    ))}
-                  </AreaChart>
+                  <Area 
+                    type="monotone" 
+                    dataKey="imports" 
+                    name="Imports" 
+                    fill="#7A9B76" 
+                    stroke="#7A9B76"
+                  />
                 </ResponsiveContainer>
               </ChartContainer>
             </CardContent>

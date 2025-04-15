@@ -17,7 +17,8 @@ import {
   PolarGrid,
   PolarAngleAxis,
   PolarRadiusAxis,
-  Radar
+  Radar,
+  Cell
 } from "recharts";
 import { supplyChainData } from "@/data/marketData";
 import { TruckIcon, Ship, Clock, DollarSign } from "lucide-react";
@@ -50,6 +51,20 @@ const SupplyChain: React.FC = () => {
       "Delivery Time": regionData.deliveryTime
     };
   });
+
+  // Prepare bar chart data for each region
+  const prepareRegionData = (metric: keyof typeof supplyChainData[0]) => {
+    return regions.map(region => {
+      const regionData = supplyChainData
+        .filter(item => item.region === region && item.year >= 2020)
+        .map(item => ({
+          year: item.year,
+          value: item[metric],
+          region: item.region
+        }));
+      return regionData;
+    }).flat();
+  };
 
   return (
     <div className="space-y-6">
@@ -221,7 +236,7 @@ const SupplyChain: React.FC = () => {
               <ChartContainer config={{}} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
-                    data={supplyChainData.filter(item => item.year >= 2020)}
+                    data={prepareRegionData("freightCosts")}
                     margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
@@ -232,12 +247,21 @@ const SupplyChain: React.FC = () => {
                     {regions.map((region, index) => (
                       <Bar 
                         key={region}
-                        dataKey="freightCosts" 
+                        dataKey="value" 
                         name={region} 
                         fill={index === 0 ? "#18453B" : index === 1 ? "#7A9B76" : "#A2AAAD"}
-                        data={supplyChainData.filter(item => item.region === region && item.year >= 2020)}
-                        opacity={region === selectedRegion || selectedRegion === "all" ? 1 : 0.5}
-                      />
+                        stackId={region}
+                      >
+                        {prepareRegionData("freightCosts")
+                          .filter(item => item.region === region)
+                          .map((entry, i) => (
+                            <Cell 
+                              key={`cell-${i}`} 
+                              fill={index === 0 ? "#18453B" : index === 1 ? "#7A9B76" : "#A2AAAD"} 
+                              opacity={region === selectedRegion || selectedRegion === "all" ? 1 : 0.5}
+                            />
+                          ))}
+                      </Bar>
                     ))}
                   </BarChart>
                 </ResponsiveContainer>

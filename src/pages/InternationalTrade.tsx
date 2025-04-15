@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -192,8 +191,7 @@ const InternationalTrade: React.FC = () => {
                     <Legend />
                     <Bar 
                       dataKey="balance" 
-                      name="Trade Balance" 
-                      fill={(data) => (data.balance >= 0 ? "#18453B" : "#FF6B35")}
+                      name="Trade Balance"
                     >
                       {yearData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.balance >= 0 ? "#18453B" : "#FF6B35"} />
