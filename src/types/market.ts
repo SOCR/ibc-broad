@@ -22,6 +22,7 @@ export interface ExchangeRateData {
   cad: number;
   aud: number;
   cny: number;
+  isForecasted?: boolean;
 }
 
 export interface InternationalTradeData {
@@ -30,6 +31,7 @@ export interface InternationalTradeData {
   imports: number;
   balance: number;
   country: string;
+  isForecasted?: boolean;
 }
 
 export interface SupplyChainData {
@@ -38,6 +40,7 @@ export interface SupplyChainData {
   freightCosts: number;
   deliveryTime: number;
   region: string;
+  isForecasted?: boolean;
 }
 
 export interface EconomicIndicator {
@@ -46,6 +49,8 @@ export interface EconomicIndicator {
   inflation: number;
   unemployment: number;
   country: string;
+  isForecasted?: boolean;
+  growth?: number;
 }
 
 export interface Course {
@@ -70,3 +75,30 @@ export interface TutorialStep {
   description: string;
   image?: string;
 }
+
+export interface ForecastMethod {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface ForecastOptions {
+  enabled: boolean;
+  method: string;
+  horizon: number;
+  confidenceInterval?: number;
+}
+
+export type TimeSeriesDataPoint = {
+  date: string | number;
+  value: number;
+  isForecasted?: boolean;
+};
+
+export type ForecastResult = {
+  data: TimeSeriesDataPoint[];
+  upperBound?: TimeSeriesDataPoint[];
+  lowerBound?: TimeSeriesDataPoint[];
+  method: string;
+  accuracy?: number;
+};
