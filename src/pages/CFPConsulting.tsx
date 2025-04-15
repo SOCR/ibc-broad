@@ -1,280 +1,199 @@
 
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { FinancialProfileForm } from "../components/cfp/FinancialProfileForm";
-import { ScenariosDisplay } from "../components/cfp/ScenariosDisplay";
-import { RetirementAnalysis } from "../components/cfp/RetirementAnalysis";
-import { EducationPlanning } from "../components/cfp/EducationPlanning";
-import { DebtManagement } from "../components/cfp/DebtManagement";
-import { FinancialProfile, FinancialScenario } from "@/types/market";
-import { generateFinancialScenarios } from "../utils/financial-planning";
-import { 
-  InfoIcon, 
-  FileText, 
-  Download, 
-  Share2, 
-  Save, 
-  RefreshCcw, 
-  Printer,
-  ChevronRight
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { FinancialProfileForm } from "@/components/cfp/FinancialProfileForm";
+import { ScenariosDisplay } from "@/components/cfp/ScenariosDisplay";
+import { RetirementAnalysis } from "@/components/cfp/RetirementAnalysis";
+import { EducationPlanning } from "@/components/cfp/EducationPlanning";
+import { DebtManagement } from "@/components/cfp/DebtManagement";
+import { FinancialHealthScoreComponent } from "@/components/cfp/FinancialHealthScore";
+import { PortfolioAllocation } from "@/components/cfp/PortfolioAllocation";
+import { FinancialProfile } from "@/types/market";
+import { generateFinancialScenarios } from "@/utils/financial-planning";
+import { Calculator, BarChart, School, CreditCard, PieChart, LineChart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-const CFPConsulting = () => {
+const CFPConsulting: React.FC = () => {
   const [profile, setProfile] = useState<FinancialProfile | null>(null);
-  const [scenarios, setScenarios] = useState<FinancialScenario[]>([]);
+  const [scenarios, setScenarios] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState("profile");
   const { toast } = useToast();
-
-  const handleProfileSubmit = (profileData: FinancialProfile) => {
+  
+  const handleSubmitProfile = (profileData: FinancialProfile) => {
     setProfile(profileData);
     const generatedScenarios = generateFinancialScenarios(profileData);
     setScenarios(generatedScenarios);
-    setActiveTab("scenarios");
+    setActiveTab("overview");
     
     toast({
-      title: "Financial Profile Submitted",
-      description: "Your financial analysis has been generated successfully.",
+      title: "Financial Analysis Generated",
+      description: "Your financial profile has been processed successfully.",
     });
   };
-
-  const handleSavePlan = () => {
-    toast({
-      title: "Financial Plan Saved",
-      description: "Your financial plan has been saved to your account.",
-    });
-  };
-
-  const handleExportPDF = () => {
-    toast({
-      title: "Export Initiated",
-      description: "Your financial plan is being prepared for download.",
-    });
-  };
-
-  const handleSharePlan = () => {
-    toast({
-      title: "Share Options",
-      description: "Share options dialog would appear here.",
-    });
-  };
-
-  const handleReRunAnalysis = () => {
-    if (profile) {
-      const generatedScenarios = generateFinancialScenarios(profile);
-      setScenarios(generatedScenarios);
-      toast({
-        title: "Analysis Updated",
-        description: "Your financial analysis has been refreshed with the latest data.",
-      });
-    }
-  };
-
+  
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Certified Financial Planning Consulting</h1>
-          <p className="text-muted-foreground">
-            Comprehensive financial planning to help you achieve your financial goals, from retirement 
-            planning to education savings and wealth building.
-          </p>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">CFP Consulting Tools</h1>
+        <div className="flex items-center">
+          <Calculator className="mr-2 h-6 w-6 text-msu-green" />
+          <span className="text-sm font-medium">Financial Planning & Analysis</span>
         </div>
-        
-        {profile && (
-          <div className="flex flex-wrap gap-2 mt-4 md:mt-0">
-            <Button variant="outline" size="sm" onClick={handleSavePlan}>
-              <Save className="mr-1 h-4 w-4" />
-              Save Plan
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleExportPDF}>
-              <Download className="mr-1 h-4 w-4" />
-              Export PDF
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleSharePlan}>
-              <Share2 className="mr-1 h-4 w-4" />
-              Share
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleReRunAnalysis}>
-              <RefreshCcw className="mr-1 h-4 w-4" />
-              Re-run Analysis
-            </Button>
-          </div>
-        )}
       </div>
-
-      {!profile && (
-        <Alert className="mb-6">
-          <FileText className="h-4 w-4" />
-          <AlertTitle>Get started with your financial plan</AlertTitle>
-          <AlertDescription>
-            Complete your financial profile to receive personalized recommendations and analysis.
-            All information is kept confidential and secure.
-          </AlertDescription>
-        </Alert>
-      )}
-
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid grid-cols-5 mb-8">
-          <TabsTrigger value="profile">
-            <HoverCard>
-              <HoverCardTrigger className="flex items-center gap-2">
-                Financial Profile
-                <InfoIcon className="h-4 w-4" />
-              </HoverCardTrigger>
-              <HoverCardContent>
-                Enter your personal and financial information to get started with your financial plan.
-              </HoverCardContent>
-            </HoverCard>
+      
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-5">
+        <TabsList className="grid grid-cols-2 md:grid-cols-6 gap-1">
+          <TabsTrigger value="profile" className="flex items-center gap-1">
+            <BarChart className="h-4 w-4" /> 
+            <span className="hidden md:inline">Profile</span>
           </TabsTrigger>
-          <TabsTrigger value="scenarios" disabled={!profile}>
-            <HoverCard>
-              <HoverCardTrigger className="flex items-center gap-2">
-                Scenarios
-                <InfoIcon className="h-4 w-4" />
-              </HoverCardTrigger>
-              <HoverCardContent>
-                Explore different financial scenarios based on your profile.
-              </HoverCardContent>
-            </HoverCard>
+          <TabsTrigger 
+            value="overview" 
+            disabled={!profile} 
+            className="flex items-center gap-1"
+          >
+            <PieChart className="h-4 w-4" /> 
+            <span className="hidden md:inline">Overview</span>
           </TabsTrigger>
-          <TabsTrigger value="retirement" disabled={!profile}>
-            <HoverCard>
-              <HoverCardTrigger className="flex items-center gap-2">
-                Retirement
-                <InfoIcon className="h-4 w-4" />
-              </HoverCardTrigger>
-              <HoverCardContent>
-                Analyze and plan your retirement strategy.
-              </HoverCardContent>
-            </HoverCard>
+          <TabsTrigger 
+            value="retirement" 
+            disabled={!profile} 
+            className="flex items-center gap-1"
+          >
+            <LineChart className="h-4 w-4" /> 
+            <span className="hidden md:inline">Retirement</span>
           </TabsTrigger>
-          <TabsTrigger value="education" disabled={!profile}>
-            <HoverCard>
-              <HoverCardTrigger className="flex items-center gap-2">
-                Education
-                <InfoIcon className="h-4 w-4" />
-              </HoverCardTrigger>
-              <HoverCardContent>
-                Plan for your children's education expenses.
-              </HoverCardContent>
-            </HoverCard>
+          <TabsTrigger 
+            value="education" 
+            disabled={!profile} 
+            className="flex items-center gap-1"
+          >
+            <School className="h-4 w-4" /> 
+            <span className="hidden md:inline">Education</span>
           </TabsTrigger>
-          <TabsTrigger value="debt" disabled={!profile}>
-            <HoverCard>
-              <HoverCardTrigger className="flex items-center gap-2">
-                Debt Management
-                <InfoIcon className="h-4 w-4" />
-              </HoverCardTrigger>
-              <HoverCardContent>
-                Analyze and optimize your debt repayment strategy.
-              </HoverCardContent>
-            </HoverCard>
+          <TabsTrigger 
+            value="debt" 
+            disabled={!profile} 
+            className="flex items-center gap-1"
+          >
+            <CreditCard className="h-4 w-4" /> 
+            <span className="hidden md:inline">Debt</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="investment" 
+            disabled={!profile} 
+            className="flex items-center gap-1"
+          >
+            <PieChart className="h-4 w-4" /> 
+            <span className="hidden md:inline">Investments</span>
           </TabsTrigger>
         </TabsList>
         
-        <TabsContent value="profile">
+        <TabsContent value="profile" className="space-y-6">
           <Card>
-            <CardContent className="pt-6">
-              <FinancialProfileForm onSubmit={handleProfileSubmit} initialData={profile} />
+            <CardHeader>
+              <CardTitle>Financial Profile</CardTitle>
+              <CardDescription>
+                Enter your financial information to generate a personalized analysis.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <FinancialProfileForm onSubmit={handleSubmitProfile} initialData={profile} />
             </CardContent>
           </Card>
         </TabsContent>
         
-        <TabsContent value="scenarios">
-          <Card>
-            <CardContent className="pt-6">
-              {profile && <ScenariosDisplay profile={profile} scenarios={scenarios} />}
-            </CardContent>
-          </Card>
+        <TabsContent value="overview" className="space-y-6">
+          {profile && scenarios.length > 0 && (
+            <>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  <ScenariosDisplay profile={profile} scenarios={scenarios} />
+                </div>
+                <div className="lg:col-span-1">
+                  <FinancialHealthScoreComponent profile={profile} />
+                </div>
+              </div>
+            </>
+          )}
         </TabsContent>
         
-        <TabsContent value="retirement">
-          <Card>
-            <CardContent className="pt-6">
-              {profile && <RetirementAnalysis profile={profile} scenarios={scenarios} />}
-            </CardContent>
-          </Card>
+        <TabsContent value="retirement" className="space-y-6">
+          {profile && scenarios.length > 0 && (
+            <RetirementAnalysis profile={profile} scenarios={scenarios} />
+          )}
         </TabsContent>
         
-        <TabsContent value="education">
-          <Card>
-            <CardContent className="pt-6">
-              {profile && <EducationPlanning profile={profile} scenarios={scenarios} />}
-            </CardContent>
-          </Card>
+        <TabsContent value="education" className="space-y-6">
+          {profile && scenarios.length > 0 && (
+            <EducationPlanning profile={profile} scenarios={scenarios} />
+          )}
         </TabsContent>
         
-        <TabsContent value="debt">
-          <Card>
-            <CardContent className="pt-6">
-              {profile && <DebtManagement profile={profile} scenarios={scenarios} />}
-            </CardContent>
-          </Card>
+        <TabsContent value="debt" className="space-y-6">
+          {profile && scenarios.length > 0 && (
+            <DebtManagement profile={profile} />
+          )}
+        </TabsContent>
+        
+        <TabsContent value="investment" className="space-y-6">
+          {profile && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <PortfolioAllocation riskTolerance={profile.riskTolerance} />
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Investment Strategy</CardTitle>
+                  <CardDescription>
+                    Custom investment recommendations based on your risk tolerance and goals
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-medium mb-2">Risk Profile: {profile.riskTolerance.charAt(0).toUpperCase() + profile.riskTolerance.slice(1)}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {profile.riskTolerance === 'low' 
+                        ? 'Your conservative risk profile indicates a preference for stability and wealth preservation over higher returns.'
+                        : profile.riskTolerance === 'medium'
+                          ? 'Your balanced approach suggests comfort with moderate market fluctuations in pursuit of long-term growth.'
+                          : 'Your aggressive stance prioritizes maximizing long-term returns despite potential short-term volatility.'}
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-semibold">Recommended Strategies:</h4>
+                    <ul className="list-disc ml-5 space-y-1">
+                      {profile.riskTolerance === 'low' ? (
+                        <>
+                          <li className="text-sm">Focus on index funds and high-quality bonds</li>
+                          <li className="text-sm">Maintain higher cash reserves (6-12 months)</li>
+                          <li className="text-sm">Consider dividend-focused investments</li>
+                          <li className="text-sm">Implement dollar-cost averaging approach</li>
+                        </>
+                      ) : profile.riskTolerance === 'medium' ? (
+                        <>
+                          <li className="text-sm">Balance between growth stocks and income investments</li>
+                          <li className="text-sm">Consider mid-cap and international exposure</li>
+                          <li className="text-sm">Moderately diversified portfolio with bonds</li>
+                          <li className="text-sm">Quarterly portfolio rebalancing</li>
+                        </>
+                      ) : (
+                        <>
+                          <li className="text-sm">Emphasis on growth stocks and emerging markets</li>
+                          <li className="text-sm">Higher allocation to small-cap and sector funds</li>
+                          <li className="text-sm">Consider strategic use of leveraged positions</li>
+                          <li className="text-sm">Explore alternative investments</li>
+                        </>
+                      )}
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </TabsContent>
       </Tabs>
-      
-      {profile && (
-        <Card className="mt-6">
-          <CardHeader>
-            <CardTitle className="text-xl">Your Next Steps</CardTitle>
-            <CardDescription>Recommended actions to improve your financial situation</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <div className="p-4 border rounded-lg">
-                <div className="flex items-center mb-2">
-                  <div className="rounded-full bg-primary/10 p-2 mr-2">
-                    <ChevronRight className="h-4 w-4 text-primary" />
-                  </div>
-                  <h3 className="font-medium">Optimize Retirement Savings</h3>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Consider increasing your monthly retirement contributions by 10% to meet your retirement income goals.
-                </p>
-              </div>
-              
-              <div className="p-4 border rounded-lg">
-                <div className="flex items-center mb-2">
-                  <div className="rounded-full bg-primary/10 p-2 mr-2">
-                    <ChevronRight className="h-4 w-4 text-primary" />
-                  </div>
-                  <h3 className="font-medium">Reduce High-Interest Debt</h3>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Focus on paying down credit card debt to save on interest payments and improve your debt-to-income ratio.
-                </p>
-              </div>
-              
-              <div className="p-4 border rounded-lg">
-                <div className="flex items-center mb-2">
-                  <div className="rounded-full bg-primary/10 p-2 mr-2">
-                    <ChevronRight className="h-4 w-4 text-primary" />
-                  </div>
-                  <h3 className="font-medium">Review Investment Allocation</h3>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Adjust your investment portfolio to align with your risk tolerance and time horizon for better returns.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button variant="outline" size="sm" onClick={() => window.print()} className="ml-auto">
-              <Printer className="mr-1 h-4 w-4" />
-              Print Recommendations
-            </Button>
-          </CardFooter>
-        </Card>
-      )}
     </div>
   );
 };

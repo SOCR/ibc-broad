@@ -1,5 +1,5 @@
-
 import { FinancialProfile, FinancialScenario } from "@/types/market";
+import { FinancialHealthScore } from "@/data/marketData";
 
 export function generateFinancialScenarios(profile: FinancialProfile): FinancialScenario[] {
   // Create three scenarios: conservative, balanced, and aggressive
@@ -293,5 +293,106 @@ function calculateResults(profile: FinancialProfile, params: CalculationParams) 
     retirementNetWorthOverTime,
     retirementAssetsOverTime,
     educationSavingsOverTime
+  };
+}
+
+// New function to calculate financial health score
+export function calculateFinancialHealthScore(profile: FinancialProfile): FinancialHealthScore {
+  // Calculate debt-to-income ratio
+  const totalMonthlyDebt = 
+    (profile.debts.mortgage / 360) +   // assuming 30-year mortgage
+    (profile.debts.studentLoans / 120) + // assuming 10-year term
+    (profile.debts.carLoans / 60) +    // assuming 5-year term
+    (profile.debts.creditCards / 24) + // assuming 2-year payoff
+    (profile.debts.other / 36);        // assuming 3-year term
+  
+  const monthlyIncome = profile.income / 12;
+  const debtToIncomeRatio = totalMonthlyDebt / monthlyIncome;
+  
+  // Calculate emergency fund ratio (months of expenses covered)
+  const monthlyExpenses = profile.monthlyExpenses;
+  const emergencyFundRatio = profile.assets.cash / monthlyExpenses;
+  
+  // Calculate retirement savings ratio
+  const idealRetirementSavings = profile.income * (profile.age / 10);
+  const actualRetirementSavings = profile.assets.investments;
+  const retirementSavingsRatio = actualRetirementSavings / idealRetirementSavings;
+  
+  // Calculate education funding ratio
+  let educationFundingRatio = 1.0; // Default to fully funded
+  if (profile.goals.education.children > 0) {
+    const totalEducationNeeds = profile.goals.education.children * 
+                              profile.goals.education.estimatedCostPerYear * 4; // 4 years of college
+    
+    const educationSavings = profile.assets.investments * 0.2; // Assume 20% of investments for education
+    educationFundingRatio = educationSavings / totalEducationNeeds;
+  }
+  
+  // Calculate cash flow ratio
+  const totalAnnualExpenses = profile.monthlyExpenses * 12;
+  const afterTaxIncome = profile.income * 0.75; // Assume 25% tax rate
+  const cashFlowRatio = (afterTaxIncome - totalAnnualExpenses) / afterTaxIncome;
+  
+  // Calculate component scores (0-100)
+  const debtScore = Math.max(0, Math.min(100, 100 - (debtToIncomeRatio * 300)));
+  const savingsScore = Math.max(0, Math.min(100, emergencyFundRatio * 20));
+  const retirementScore = Math.max(0, Math.min(100, retirementSavingsRatio * 100));
+  const educationScore = Math.max(0, Math.min(100, educationFundingRatio * 100));
+  const cashFlowScore = Math.max(0, Math.min(100, (cashFlowRatio + 0.2) * 200));
+  
+  // Calculate overall score with weightings
+  const overallScore = Math.round(
+    (debtScore * 0.2) +
+    (savingsScore * 0.2) +
+    (retirementScore * 0.3) +
+    (educationScore * 0.15) +
+    (cashFlowScore * 0.15)
+  );
+  
+  // Determine status
+  let status: 'poor' | 'fair' | 'good' | 'excellent';
+  if (overallScore >= 80) status = 'excellent';
+  else if (overallScore >= 60) status = 'good';
+  else if (overallScore >= 40) status = 'fair';
+  else status = 'poor';
+  
+  // Generate recommendations
+  const recommendations: string[] = [];
+  
+  if (debtScore < 60) {
+    recommendations.push("Focus on reducing high-interest debt, particularly credit cards.");
+  }
+  
+  if (savingsScore < 60) {
+    recommendations.push(`Build emergency fund to cover at least ${Math.max(3, Math.round(emergencyFundRatio))} months of expenses.`);
+  }
+  
+  if (retirementScore < 60) {
+    recommendations.push(`Increase retirement contributions by at least ${Math.round((0.15 - (profile.goals.retirement.savingRate / profile.income)) * 100)}% of income.`);
+  }
+  
+  if (educationScore < 60 && profile.goals.education.children > 0) {
+    recommendations.push("Consider opening a 529 college savings plan or increasing education fund contributions.");
+  }
+  
+  if (cashFlowScore < 60) {
+    recommendations.push("Review monthly expenses and identify areas to reduce spending to improve cash flow.");
+  }
+  
+  if (recommendations.length === 0) {
+    recommendations.push("Continue your current financial strategy, which shows excellent financial health.");
+  }
+  
+  return {
+    overall: overallScore,
+    components: {
+      debt: Math.round(debtScore),
+      savings: Math.round(savingsScore),
+      retirement: Math.round(retirementScore),
+      education: Math.round(educationScore),
+      cashflow: Math.round(cashFlowScore)
+    },
+    status,
+    recommendations
   };
 }
