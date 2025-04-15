@@ -19,6 +19,13 @@ export default {
 		},
 		extend: {
 			colors: {
+				msu: {
+					green: '#18453B',
+					white: '#FFFFFF',
+					accent: '#A2AAAD',
+					lightGreen: '#7A9B76',
+					darkGreen: '#0F2E26',
+				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
