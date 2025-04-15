@@ -21,7 +21,11 @@ import {
   BarChart2,
   DollarSign,
   TrendingUp,
-  Compass
+  Compass,
+  BookIcon,
+  GraduationCap,
+  TruckIcon,
+  ShipIcon
 } from "lucide-react";
 
 // MSU logo component
@@ -97,9 +101,9 @@ export function AppSidebar() {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <Link to="/stock-tracker">
+                <Link to="/stock-exchanges">
                   <TrendingUp className="h-5 w-5 mr-3" />
-                  <span>Stock Tracker</span>
+                  <span>Stock Exchanges</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -126,7 +130,7 @@ export function AppSidebar() {
         
         <SidebarGroup>
           <div className="mb-2 px-4 text-sm font-semibold tracking-tight">
-            Resources
+            Trade & Supply Chain
           </div>
           <SidebarMenu>
             <SidebarMenuItem>
@@ -134,6 +138,40 @@ export function AppSidebar() {
                 <Link to="/global-trade">
                   <GlobeIcon className="h-5 w-5 mr-3" />
                   <span>Global Trade</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="/supply-chain">
+                  <TruckIcon className="h-5 w-5 mr-3" />
+                  <span>Supply Chain</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="/international-trade">
+                  <ShipIcon className="h-5 w-5 mr-3" />
+                  <span>International Trade</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+        
+        <SidebarGroup>
+          <div className="mb-2 px-4 text-sm font-semibold tracking-tight">
+            Resources
+          </div>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="/broad-courses">
+                  <GraduationCap className="h-5 w-5 mr-3" />
+                  <span>Broad Courses</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -152,15 +190,6 @@ export function AppSidebar() {
                 <Link to="/tutorial">
                   <BookOpen className="h-5 w-5 mr-3" />
                   <span>Tutorial</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <Link to="/resources">
-                  <Compass className="h-5 w-5 mr-3" />
-                  <span>Resources</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
