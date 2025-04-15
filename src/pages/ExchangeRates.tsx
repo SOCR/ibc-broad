@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -13,7 +12,7 @@ import {
   ResponsiveContainer,
   ReferenceArea
 } from "recharts";
-import { exchangeRateData, generateForecast, forecastMethods } from "@/data/marketData";
+import { exchangeRateData, forecastMethods } from "@/data/marketData";
 import { 
   DollarSign, 
   Euro, 
@@ -36,6 +35,7 @@ import {
 } from "@/components/ui/toggle-group";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { generateTimeSeriesTorecast } from "@/utils/forecasting";
 
 const currencies = [
   { code: "eur", name: "Euro (EUR)", icon: Euro, color: "#1E88E5" },
@@ -123,10 +123,11 @@ const ExchangeRates: React.FC = () => {
     // Generate forecasts for each currency
     const forecastedData = [...filteredData];
     currencies.forEach(currency => {
-      const currencyForecast = generateForecast(
-        filteredData,
-        currency.code,
-        "date",
+      const currencyForecast = generateTimeSeriesTorecast(
+        filteredData.map(item => ({ 
+          date: item.date, 
+          value: item[currency.code as keyof typeof item] as number 
+        })),
         forecastMethod,
         forecastYears
       ).filter(item => item.isForecasted);
@@ -135,9 +136,15 @@ const ExchangeRates: React.FC = () => {
       currencyForecast.forEach(item => {
         const existingItemIndex = forecastedData.findIndex(d => d.date === item.date);
         if (existingItemIndex >= 0) {
-          forecastedData[existingItemIndex][currency.code] = item[currency.code];
+          forecastedData[existingItemIndex][currency.code] = item.value;
         } else {
-          forecastedData.push(item);
+          const newDataPoint = { date: item.date, isForecasted: true };
+          currencies.forEach(c => {
+            // Default to last known value for other currencies
+            const lastKnown = filteredData[filteredData.length - 1][c.code as keyof typeof filteredData[0]] as number;
+            newDataPoint[c.code as keyof typeof newDataPoint] = c.code === currency.code ? item.value : lastKnown;
+          });
+          forecastedData.push(newDataPoint as any);
         }
       });
     });

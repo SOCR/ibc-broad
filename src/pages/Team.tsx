@@ -2,7 +2,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { teamMembers } from "@/data/marketData";
+import { ibcTeamMembers } from "@/data/marketData";
 import { Users } from "lucide-react";
 
 const TeamMemberCard: React.FC<{
@@ -46,7 +46,7 @@ const Team: React.FC = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {teamMembers.map((member) => (
+        {ibcTeamMembers.map((member) => (
           <TeamMemberCard 
             key={member.name}
             name={member.name}
