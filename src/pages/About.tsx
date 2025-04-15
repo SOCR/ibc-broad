@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -36,12 +35,12 @@ const About: React.FC = () => {
             <CardContent className="space-y-4">
               <div className="flex justify-center mb-6">
                 <img 
-                  src="https://global.broad.msu.edu/ibc/wp-content/uploads/sites/14/2018/11/IBC-logo.png" 
+                  src="/lovable-uploads/9d929b60-7bb3-44c4-b693-a09c2e76a596.png" 
                   alt="MSU IBC Logo" 
-                  className="h-28 object-contain"
+                  className="h-40 object-contain"
                 />
               </div>
-
+              
               <p>
                 Michigan State University's International Business Center (IBC) was designated in 1990 as a National Resource Center by the U.S. Department of Education. 
                 Michigan State is one of only 15 universities in the country to be awarded a federal grant to operate a Center for International Business Education and Research (CIBER).
@@ -95,12 +94,12 @@ const About: React.FC = () => {
             <CardContent className="space-y-4">
               <div className="flex justify-center mb-6">
                 <img 
-                  src="https://www.socr.umich.edu/img/SOCR_Web_Icon.ico" 
+                  src="/lovable-uploads/c1d31bff-5408-4c41-aaa2-07e841619b85.png" 
                   alt="SOCR Logo" 
-                  className="h-28 object-contain"
+                  className="h-40 object-contain"
                 />
               </div>
-
+              
               <p>
                 The Statistics Online Computational Resource (SOCR) is an NSF-funded project that provides free online educational materials, interactive tools, 
                 statistical computing resources, and data analytics services. SOCR aims to advance probability and statistics education, scientific inquiry, and quantitative research.
