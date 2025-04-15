@@ -102,3 +102,64 @@ export type ForecastResult = {
   method: string;
   accuracy?: number;
 };
+
+export interface FinancialProfile {
+  id: string;
+  name: string;
+  age: number;
+  retirementAge: number;
+  lifeExpectancy: number;
+  income: number;
+  monthlyExpenses: number;
+  assets: {
+    cash: number;
+    investments: number;
+    realEstate: number;
+    other: number;
+  };
+  debts: {
+    mortgage: number;
+    studentLoans: number;
+    carLoans: number;
+    creditCards: number;
+    other: number;
+  };
+  goals: {
+    retirement: {
+      monthlyIncome: number;
+      savingRate: number;
+    };
+    education: {
+      children: number;
+      yearsUntilCollege: number[];
+      estimatedCostPerYear: number;
+      savingRate: number;
+    };
+    other: {
+      description: string;
+      targetAmount: number;
+      targetDate: number;
+      savingRate: number;
+    }[];
+  };
+  riskTolerance: 'low' | 'medium' | 'high';
+}
+
+export interface FinancialScenario {
+  id: string;
+  name: string;
+  description: string;
+  investmentReturn: number;
+  inflationRate: number;
+  taxRate: number;
+  retirementSavingRate: number;
+  additionalIncome: number;
+  expenseReduction: number;
+  results: {
+    retirementBalance: number;
+    retirementIncome: number;
+    collegeBalance: number;
+    netWorthOverTime: Array<{year: number, value: number}>;
+    savingsOverTime: Array<{year: number, value: number}>;
+  };
+}

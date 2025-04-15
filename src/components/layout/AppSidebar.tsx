@@ -25,7 +25,11 @@ import {
   BookIcon,
   GraduationCap,
   TruckIcon,
-  ShipIcon
+  ShipIcon,
+  BriefcaseIcon,
+  InfoIcon,
+  Calculator,
+  Building
 } from "lucide-react";
 
 // MSU logo component
@@ -164,6 +168,22 @@ export function AppSidebar() {
         
         <SidebarGroup>
           <div className="mb-2 px-4 text-sm font-semibold tracking-tight">
+            Case Studies
+          </div>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="/cfp-consulting">
+                  <Calculator className="h-5 w-5 mr-3" />
+                  <span>CFP Consulting</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+        
+        <SidebarGroup>
+          <div className="mb-2 px-4 text-sm font-semibold tracking-tight">
             Resources
           </div>
           <SidebarMenu>
@@ -190,6 +210,15 @@ export function AppSidebar() {
                 <Link to="/tutorial">
                   <BookOpen className="h-5 w-5 mr-3" />
                   <span>Tutorial</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="/about">
+                  <InfoIcon className="h-5 w-5 mr-3" />
+                  <span>About</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

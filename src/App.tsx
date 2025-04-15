@@ -18,6 +18,8 @@ import InternationalTrade from "./pages/InternationalTrade";
 import Team from "./pages/Team";
 import Tutorial from "./pages/Tutorial";
 import NotFound from "./pages/NotFound";
+import About from "./pages/About";
+import CFPConsulting from "./pages/CFPConsulting";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,9 +48,11 @@ const App = () => (
             <Route path="/global-trade" element={<GlobalTrade />} />
             <Route path="/supply-chain" element={<SupplyChain />} />
             <Route path="/international-trade" element={<InternationalTrade />} />
+            <Route path="/cfp-consulting" element={<CFPConsulting />} />
             <Route path="/broad-courses" element={<BroadCourses />} />
             <Route path="/team" element={<Team />} />
             <Route path="/tutorial" element={<Tutorial />} />
+            <Route path="/about" element={<About />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
