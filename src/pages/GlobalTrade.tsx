@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -278,15 +279,16 @@ const GlobalTrade: React.FC = () => {
                         dot={{ r: 3 }} 
                         activeDot={{ r: 5 }} 
                         opacity={region === selectedRegion || selectedRegion === "all" ? 1 : 0.5}
-                    />
-                  ))}
-                </LineChart>
-              </ResponsiveContainer>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-      </TabsContent>
-    </Tabs>
+                      />
+                    ))}
+                  </LineChart>
+                </ResponsiveContainer>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
 
