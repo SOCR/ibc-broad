@@ -1,6 +1,7 @@
 
 import React, { useState } from "react";
 import { exchangeRateData, forecastMethods } from "@/data/marketData";
+import { dateRanges } from "@/data/constants";
 import { 
   DollarSign, 
   Euro, 
@@ -46,14 +47,14 @@ const ExchangeRates: React.FC = () => {
     const range = dateRanges.find(r => r.id === selectedDateRange)?.value || 12;
     
     if (range >= 1000) {
-      return data; // Return all data
+      return data;
     }
     
     const cutoffDate = new Date();
     cutoffDate.setMonth(cutoffDate.getMonth() - range);
     
     return data.filter(item => {
-      const itemDate = new Date(item.date + "-01"); // Convert YYYY-MM to YYYY-MM-DD
+      const itemDate = new Date(item.date + "-01");
       return itemDate >= cutoffDate;
     });
   };
@@ -66,17 +67,13 @@ const ExchangeRates: React.FC = () => {
       return filteredData;
     }
     
-    // Generate forecasts for each currency
     const forecastedData = [...filteredData];
+    
     currencies.forEach(currency => {
       const dataPoints = filteredData.map(item => item[currency.code as keyof typeof item] as number);
+      const currencyForecast = createMultiMethodForecast(dataPoints, forecastYears)[forecastMethod];
       
-      // Fixed: Pass array of numbers to createMultiMethodForecast
-      const currencyForecast = createMultiMethodForecast(dataPoints, forecastYears).linear;
-      
-      // Merge forecasted data
       currencyForecast.forEach((value, index) => {
-        // Calculate the date for this forecast point (monthly increments from last known date)
         const lastDate = new Date(filteredData[filteredData.length - 1].date + "-01");
         const forecastDate = new Date(lastDate);
         forecastDate.setMonth(lastDate.getMonth() + index + 1);
@@ -84,15 +81,20 @@ const ExchangeRates: React.FC = () => {
         
         const existingItemIndex = forecastedData.findIndex(d => d.date === forecastDateString);
         if (existingItemIndex >= 0) {
-          forecastedData[existingItemIndex][currency.code] = value;
+          forecastedData[existingItemIndex] = {
+            ...forecastedData[existingItemIndex],
+            [currency.code]: value
+          };
         } else {
-          const newDataPoint = { date: forecastDateString, isForecasted: true };
+          const newDataPoint: any = { 
+            date: forecastDateString, 
+            isForecasted: true 
+          };
           currencies.forEach(c => {
-            // Default to last known value for other currencies
             const lastKnown = filteredData[filteredData.length - 1][c.code as keyof typeof filteredData[0]] as number;
-            newDataPoint[c.code as keyof typeof newDataPoint] = c.code === currency.code ? value : lastKnown;
+            newDataPoint[c.code] = c.code === currency.code ? value : lastKnown;
           });
-          forecastedData.push(newDataPoint as any);
+          forecastedData.push(newDataPoint);
         }
       });
     });
@@ -101,8 +103,6 @@ const ExchangeRates: React.FC = () => {
   };
   
   const chartData = getChartData();
-  
-  // Get latest exchange rates
   const latestData = exchangeRateData[exchangeRateData.length - 1];
   const previousData = exchangeRateData[exchangeRateData.length - 2];
   const lastActualDate = latestData.date;
