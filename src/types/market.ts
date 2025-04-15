@@ -63,3 +63,29 @@ export interface FinancialScenario {
   expenseReduction: number;
   results: FinancialScenarioResults;
 }
+
+// New additions for stockExchange and supplyChain data
+export interface StockExchange {
+  name: string;
+  location: string;
+  marketCap: number;
+  listedCompanies: number;
+  topSectors: string[];
+  tradingHours: string;
+  established: number;
+  year: number; // Adding missing year property
+}
+
+export interface SupplyChainData {
+  product: string;
+  year: number;
+  sourceCountries: string[];
+  transportationModes: string[];
+  leadTimes: number;
+  costs: number;
+  disruptions: number;
+  region: string; // Adding missing region property
+  containerVolume: number; // Adding missing containerVolume property
+  freightCosts: number; // Adding missing freightCosts property
+  deliveryTime: number; // Adding missing deliveryTime property
+}

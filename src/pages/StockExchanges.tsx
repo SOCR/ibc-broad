@@ -13,6 +13,7 @@ import {
   ResponsiveContainer
 } from "recharts";
 import { stockExchangeData } from "@/data/marketData";
+import { StockExchange } from "@/types/market";
 import {
   Select,
   SelectContent,

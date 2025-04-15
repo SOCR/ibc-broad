@@ -21,6 +21,7 @@ import {
   Cell
 } from "recharts";
 import { supplyChainData } from "@/data/marketData";
+import { SupplyChainData } from "@/types/market";
 import { TruckIcon, Ship, Clock, DollarSign } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -53,7 +54,7 @@ const SupplyChain: React.FC = () => {
   });
 
   // Prepare bar chart data for each region
-  const prepareRegionData = (metric: keyof typeof supplyChainData[0]) => {
+  const prepareRegionData = (metric: keyof SupplyChainData) => {
     return regions.map(region => {
       const regionData = supplyChainData
         .filter(item => item.region === region && item.year >= 2020)

@@ -133,7 +133,7 @@ const CFPConsulting: React.FC = () => {
         
         <TabsContent value="debt" className="space-y-6">
           {profile && scenarios.length > 0 && (
-            <DebtManagement profile={profile} />
+            <DebtManagement profile={profile} scenarios={scenarios} />
           )}
         </TabsContent>
         
