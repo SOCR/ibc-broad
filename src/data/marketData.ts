@@ -1,4 +1,3 @@
-
 export const ibcTeamMembers = [
   {
     name: "Tomas Hult",
@@ -240,7 +239,8 @@ export const stockExchangeData = [
     listedCompanies: 2400,
     topSectors: ["Financials", "Technology", "Healthcare"],
     tradingHours: "9:30 AM - 4:00 PM EST",
-    established: 1792
+    established: 1792,
+    year: 2023
   },
   {
     name: "NASDAQ",
@@ -249,7 +249,8 @@ export const stockExchangeData = [
     listedCompanies: 3700,
     topSectors: ["Technology", "Consumer Services", "Healthcare"],
     tradingHours: "9:30 AM - 4:00 PM EST",
-    established: 1971
+    established: 1971,
+    year: 2023
   },
   {
     name: "Shanghai Stock Exchange",
@@ -258,7 +259,8 @@ export const stockExchangeData = [
     listedCompanies: 1600,
     topSectors: ["Financials", "Industrials", "Materials"],
     tradingHours: "9:30 AM - 3:00 PM CST",
-    established: 1990
+    established: 1990,
+    year: 2023
   },
   {
     name: "Euronext",
@@ -267,7 +269,8 @@ export const stockExchangeData = [
     listedCompanies: 1900,
     topSectors: ["Financials", "Consumer Staples", "Industrials"],
     tradingHours: "9:00 AM - 5:40 PM CET",
-    established: 2000
+    established: 2000,
+    year: 2023
   },
   {
     name: "Japan Exchange Group",
@@ -276,7 +279,8 @@ export const stockExchangeData = [
     listedCompanies: 3700,
     topSectors: ["Technology", "Consumer Goods", "Industrials"],
     tradingHours: "9:00 AM - 3:00 PM JST",
-    established: 1878
+    established: 1878,
+    year: 2023
   },
   {
     name: "London Stock Exchange",
@@ -285,10 +289,12 @@ export const stockExchangeData = [
     listedCompanies: 2200,
     topSectors: ["Financials", "Energy", "Consumer Staples"],
     tradingHours: "8:00 AM - 4:30 PM GMT",
-    established: 1801
+    established: 1801,
+    year: 2023
   }
 ];
 
+// Update the supply chain data to include the missing properties
 export const supplyChainData = [
   {
     product: "Electronics",
@@ -297,7 +303,11 @@ export const supplyChainData = [
     transportationModes: ["Air", "Sea"],
     leadTimes: 45,
     costs: 120,
-    disruptions: 5
+    disruptions: 5,
+    region: "Asia",
+    containerVolume: 32,
+    freightCosts: 1200,
+    deliveryTime: 12
   },
   {
     product: "Electronics",
@@ -306,7 +316,11 @@ export const supplyChainData = [
     transportationModes: ["Air", "Sea"],
     leadTimes: 55,
     costs: 150,
-    disruptions: 12
+    disruptions: 12,
+    region: "Asia",
+    containerVolume: 35,
+    freightCosts: 1500,
+    deliveryTime: 15
   },
   {
     product: "Electronics",
@@ -315,7 +329,11 @@ export const supplyChainData = [
     transportationModes: ["Air", "Sea", "Truck"],
     leadTimes: 42,
     costs: 135,
-    disruptions: 7
+    disruptions: 7,
+    region: "Asia",
+    containerVolume: 38,
+    freightCosts: 1300,
+    deliveryTime: 10
   },
   {
     product: "Apparel",
@@ -324,7 +342,11 @@ export const supplyChainData = [
     transportationModes: ["Sea"],
     leadTimes: 75,
     costs: 45,
-    disruptions: 3
+    disruptions: 3,
+    region: "Southeast Asia",
+    containerVolume: 28,
+    freightCosts: 900,
+    deliveryTime: 18
   },
   {
     product: "Apparel",
@@ -333,7 +355,11 @@ export const supplyChainData = [
     transportationModes: ["Sea"],
     leadTimes: 90,
     costs: 58,
-    disruptions: 10
+    disruptions: 10,
+    region: "Southeast Asia",
+    containerVolume: 30,
+    freightCosts: 1100,
+    deliveryTime: 22
   },
   {
     product: "Apparel",
@@ -342,7 +368,11 @@ export const supplyChainData = [
     transportationModes: ["Sea", "Truck"],
     leadTimes: 65,
     costs: 52,
-    disruptions: 4
+    disruptions: 4,
+    region: "Southeast Asia",
+    containerVolume: 33,
+    freightCosts: 1000,
+    deliveryTime: 15
   },
   {
     product: "Automotive",
@@ -351,7 +381,11 @@ export const supplyChainData = [
     transportationModes: ["Sea", "Rail", "Truck"],
     leadTimes: 60,
     costs: 220,
-    disruptions: 8
+    disruptions: 8,
+    region: "Global",
+    containerVolume: 42,
+    freightCosts: 2200,
+    deliveryTime: 14
   },
   {
     product: "Automotive",
@@ -360,7 +394,11 @@ export const supplyChainData = [
     transportationModes: ["Sea", "Rail", "Truck"],
     leadTimes: 95,
     costs: 280,
-    disruptions: 18
+    disruptions: 18,
+    region: "Global",
+    containerVolume: 45,
+    freightCosts: 2800,
+    deliveryTime: 21
   },
   {
     product: "Automotive",
@@ -369,7 +407,11 @@ export const supplyChainData = [
     transportationModes: ["Sea", "Rail", "Truck"],
     leadTimes: 75,
     costs: 255,
-    disruptions: 9
+    disruptions: 9,
+    region: "Global",
+    containerVolume: 48,
+    freightCosts: 2500,
+    deliveryTime: 16
   }
 ];
 
