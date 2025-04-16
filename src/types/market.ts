@@ -1,4 +1,3 @@
-
 // Add here your market types
 export interface FinancialProfile {
   id: string;
@@ -88,4 +87,52 @@ export interface SupplyChainData {
   containerVolume: number; // Adding missing containerVolume property
   freightCosts: number; // Adding missing freightCosts property
   deliveryTime: number; // Adding missing deliveryTime property
+}
+
+// Global Trade Analysis types
+export interface MarketFactors {
+  interestRates: number;          // 0-10 scale, representing base rates
+  inflation: number;              // 0-15 scale, percentage
+  currencyVolatility: number;     // 0-10 scale, low to high volatility
+  commodityPrices: number;        // 0-10 scale, current price levels
+  geopoliticalRisk: number;       // 0-10 scale, low to high risk
+  consumerConfidence: number;     // 0-10 scale, low to high confidence
+  manufacturingOutput: number;    // 0-10 scale, contraction to expansion
+  energyPrices: number;           // 0-10 scale, low to high prices
+}
+
+export interface TradeIndicator {
+  id: string;
+  name: string;
+  currentValue: number;
+  projected: number;
+  impact: 'positive' | 'negative' | 'neutral';
+  description: string;
+}
+
+export interface RegionalGrowth {
+  region: string;
+  currentGrowth: number;  // Current GDP growth rate
+  projectedGrowth: number; // Projected growth rate
+  tradeVolume: number;     // 0-10 scale
+  marketAccessibility: number; // 0-10 scale 
+  stability: number;       // 0-10 scale
+  industries: Array<{
+    name: string;
+    strength: number;      // 0-10 scale
+    outlook: 'positive' | 'negative' | 'neutral';
+  }>;
+}
+
+export interface GlobalRecommendation {
+  id: string;
+  title: string;
+  description: string;
+  regions: string[];
+  sectors: string[];
+  riskLevel: 'low' | 'moderate' | 'high';
+  timeframe: 'short' | 'medium' | 'long';
+  potentialReturn: number; // Percentage
+  confidenceScore: number; // 0-100
+  factors: string[];
 }
