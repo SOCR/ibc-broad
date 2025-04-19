@@ -1,5 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import React from "react";
 
 interface StatCardProps {
   title: string;
@@ -7,6 +8,7 @@ interface StatCardProps {
   description?: string;
   className?: string;
   valueClassName?: string;
+  children?: React.ReactNode;
 }
 
 export const StatCard: React.FC<StatCardProps> = ({
@@ -14,7 +16,8 @@ export const StatCard: React.FC<StatCardProps> = ({
   value,
   description,
   className,
-  valueClassName = "text-msu-green"
+  valueClassName = "text-msu-green",
+  children
 }) => {
   return (
     <Card className={className}>
@@ -24,11 +27,17 @@ export const StatCard: React.FC<StatCardProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className={`text-4xl font-bold ${valueClassName}`}>{value}</div>
-        {description && (
-          <p className="text-sm text-muted-foreground mt-2">
-            {description}
-          </p>
+        {children ? (
+          children
+        ) : (
+          <>
+            <div className={`text-4xl font-bold ${valueClassName}`}>{value}</div>
+            {description && (
+              <p className="text-sm text-muted-foreground mt-2">
+                {description}
+              </p>
+            )}
+          </>
         )}
       </CardContent>
     </Card>

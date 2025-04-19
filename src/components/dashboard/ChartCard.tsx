@@ -1,10 +1,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ResponsiveContainer } from "recharts";
+import React, { ReactElement } from "react";
 
 interface ChartCardProps {
   title: string;
-  children: React.ReactNode;
+  children: ReactElement;
   className?: string;
   height?: string;
 }
