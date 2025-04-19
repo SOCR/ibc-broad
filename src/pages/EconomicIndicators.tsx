@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -38,6 +39,26 @@ const getGdpGrowthData = () => {
     });
 };
 
+// Process data to ensure proper grouping by country for line charts
+const processDataForLineCharts = (data, metric) => {
+  const countries = [...new Set(data.map(item => item.country))];
+  
+  return countries.map(country => {
+    const countryData = data
+      .filter(item => item.country === country)
+      .sort((a, b) => a.year - b.year);
+      
+    return {
+      name: country,
+      data: countryData.map(item => ({
+        year: item.year,
+        value: item[metric],
+        country: item.country
+      }))
+    };
+  });
+};
+
 const EconomicIndicators: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<number>(2022);
   const gdpGrowthData = getGdpGrowthData();
@@ -50,6 +71,11 @@ const EconomicIndicators: React.FC = () => {
     name: item.country,
     value: item.gdp
   }));
+  
+  // Process data for line charts
+  const gdpLineData = processDataForLineCharts(economicIndicators, 'gdp');
+  const inflationLineData = processDataForLineCharts(economicIndicators, 'inflation');
+  const unemploymentLineData = processDataForLineCharts(economicIndicators, 'unemployment');
   
   return (
     <div className="space-y-6">
@@ -184,25 +210,29 @@ const EconomicIndicators: React.FC = () => {
               <ChartContainer config={{}} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
-                    data={economicIndicators}
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="year" />
+                    <XAxis 
+                      dataKey="year"
+                      type="number" 
+                      domain={['dataMin', 'dataMax']} 
+                      allowDuplicatedCategory={false}
+                    />
                     <YAxis />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Legend />
-                    {Array.from(new Set(economicIndicators.map(item => item.country))).map((country, index) => (
+                    {gdpLineData.map((country, index) => (
                       <Line 
-                        key={country}
+                        key={country.name}
+                        name={country.name}
+                        data={country.data}
                         type="monotone" 
-                        dataKey="gdp" 
-                        name={country} 
+                        dataKey="value"
                         stroke={COLORS[index % COLORS.length]} 
                         strokeWidth={1.5} 
-                        data={economicIndicators.filter(item => item.country === country)}
                         dot={{ r: 3 }} 
-                        activeDot={{ r: 5 }} 
+                        activeDot={{ r: 5 }}
                       />
                     ))}
                   </LineChart>
@@ -227,14 +257,11 @@ const EconomicIndicators: React.FC = () => {
                     <YAxis />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Legend />
-                    {Array.from(new Set(gdpGrowthData.map(item => item.country))).map((country, index) => (
-                      <Bar 
-                        key={country}
-                        dataKey="growth" 
-                        name={`${country} Growth %`} 
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))}
+                    <Bar 
+                      dataKey="growth" 
+                      name="Growth %"
+                      fill="#18453B"
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </ChartContainer>
@@ -251,25 +278,29 @@ const EconomicIndicators: React.FC = () => {
               <ChartContainer config={{}} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
-                    data={economicIndicators}
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="year" />
+                    <XAxis 
+                      dataKey="year"
+                      type="number"
+                      domain={['dataMin', 'dataMax']}
+                      allowDuplicatedCategory={false}
+                    />
                     <YAxis />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Legend />
-                    {Array.from(new Set(economicIndicators.map(item => item.country))).map((country, index) => (
+                    {inflationLineData.map((country, index) => (
                       <Line 
-                        key={country}
+                        key={country.name}
+                        name={country.name}
+                        data={country.data}
                         type="monotone" 
-                        dataKey="inflation" 
-                        name={country} 
+                        dataKey="value"
                         stroke={COLORS[index % COLORS.length]} 
                         strokeWidth={1.5} 
-                        data={economicIndicators.filter(item => item.country === country)}
                         dot={{ r: 3 }} 
-                        activeDot={{ r: 5 }} 
+                        activeDot={{ r: 5 }}
                       />
                     ))}
                   </LineChart>
@@ -288,25 +319,29 @@ const EconomicIndicators: React.FC = () => {
               <ChartContainer config={{}} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
-                    data={economicIndicators}
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="year" />
+                    <XAxis 
+                      dataKey="year"
+                      type="number"
+                      domain={['dataMin', 'dataMax']}
+                      allowDuplicatedCategory={false}
+                    />
                     <YAxis />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Legend />
-                    {Array.from(new Set(economicIndicators.map(item => item.country))).map((country, index) => (
+                    {unemploymentLineData.map((country, index) => (
                       <Line 
-                        key={country}
+                        key={country.name}
+                        name={country.name}
+                        data={country.data}
                         type="monotone" 
-                        dataKey="unemployment" 
-                        name={country} 
+                        dataKey="value"
                         stroke={COLORS[index % COLORS.length]} 
                         strokeWidth={1.5} 
-                        data={economicIndicators.filter(item => item.country === country)}
                         dot={{ r: 3 }} 
-                        activeDot={{ r: 5 }} 
+                        activeDot={{ r: 5 }}
                       />
                     ))}
                   </LineChart>

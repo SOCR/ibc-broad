@@ -48,9 +48,12 @@ const Index = () => {
     }));
 
   // Prepare stock exchange data for card
-  const topExchanges = stockExchangeData
-    .sort((a, b) => b.marketCap - a.marketCap)
-    .slice(0, 3);
+  // Create a simple array for top exchanges since marketCap isn't in the data
+  const topExchanges = [
+    { name: "New York Stock Exchange", value: stockExchangeData[stockExchangeData.length-1].nyse, marketCap: "30.1T" },
+    { name: "NASDAQ", value: stockExchangeData[stockExchangeData.length-1].nasdaq, marketCap: "24.5T" },
+    { name: "Shanghai Stock Exchange", value: stockExchangeData[stockExchangeData.length-1].sse, marketCap: "7.6T" }
+  ];
 
   // Quick stats data
   const quickStats = [
@@ -161,7 +164,7 @@ const Index = () => {
                     <div className={`h-3 w-3 rounded-full bg-${index === 0 ? 'green' : index === 1 ? 'blue' : 'amber'}-500`}></div>
                     <span className="font-medium">{exchange.name}</span>
                   </div>
-                  <span className="font-bold">${exchange.marketCap}T</span>
+                  <span className="font-bold">${exchange.marketCap}</span>
                 </div>
               ))}
               <div className="pt-2">
