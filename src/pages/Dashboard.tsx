@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
@@ -18,6 +17,8 @@ import {
 } from "recharts";
 import { ibexOverTimeData, ibexKnowledgeData, stateActivity } from "@/data/ibexData";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FileText } from "lucide-react";
+import { Link } from "react-router-dom";
 
 // Mock stock data
 const stockData = [
@@ -204,6 +205,23 @@ const Dashboard: React.FC = () => {
           </ResponsiveContainer>
         </CardContent>
       </Card>
+
+      <div className="mt-8 border-t pt-6">
+        <div className="flex items-center space-x-2 text-muted-foreground">
+          <FileText className="h-4 w-4" />
+          <a 
+            href="https://ibc-static.broad.msu.edu/sites/globalinit/ibc/publications/research/pdfs/ibex2019.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm hover:underline"
+          >
+            2019 Broad IBC Benchmark Report on International Business Education at Community Colleges
+          </a>
+        </div>
+        <p className="text-xs text-muted-foreground mt-2">
+          © 2019 Michigan State University International Business Center. All rights reserved.
+        </p>
+      </div>
     </div>
   );
 };
