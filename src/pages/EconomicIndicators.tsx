@@ -59,6 +59,18 @@ const processDataForLineCharts = (data, metric) => {
   });
 };
 
+// Type for chart data
+interface CountryData {
+  year: number;
+  value: number;
+  country: string;
+}
+
+interface ProcessedLineData {
+  name: string;
+  data: CountryData[];
+}
+
 const EconomicIndicators: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<number>(2022);
   const gdpGrowthData = getGdpGrowthData();
@@ -222,7 +234,7 @@ const EconomicIndicators: React.FC = () => {
                     <YAxis />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Legend />
-                    {gdpLineData.map((country, index) => (
+                    {gdpLineData.map((country: ProcessedLineData, index: number) => (
                       <Line 
                         key={`${country.name}-${index}`}
                         name={country.name}
@@ -290,7 +302,7 @@ const EconomicIndicators: React.FC = () => {
                     <YAxis />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Legend />
-                    {inflationLineData.map((country, index) => (
+                    {inflationLineData.map((country: ProcessedLineData, index: number) => (
                       <Line 
                         key={`${country.name}-${index}`}
                         name={country.name}
@@ -331,7 +343,7 @@ const EconomicIndicators: React.FC = () => {
                     <YAxis />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Legend />
-                    {unemploymentLineData.map((country, index) => (
+                    {unemploymentLineData.map((country: ProcessedLineData, index: number) => (
                       <Line 
                         key={`${country.name}-${index}`}
                         name={country.name}
