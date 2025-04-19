@@ -56,7 +56,12 @@ const Tutorial: React.FC = () => {
             
             {step.image && (
               <div className="mt-4 flex justify-center">
-                <img src={step.image} alt={`Tutorial step ${currentStep}`} className="max-w-full rounded-md shadow-md" />
+                <img 
+                  src={`/tutorial-graphs/graph-${currentStep}.png`} 
+                  alt={`Tutorial step ${currentStep}`} 
+                  className="max-w-full h-auto rounded-md shadow-md"
+                  style={{ maxHeight: '300px' }}
+                />
               </div>
             )}
           </div>
