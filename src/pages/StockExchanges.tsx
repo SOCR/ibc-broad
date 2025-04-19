@@ -13,7 +13,7 @@ import {
   ResponsiveContainer
 } from "recharts";
 import { stockExchangeData } from "@/data/marketData";
-import { StockExchange } from "@/types/market";
+import { Slider } from "@/components/ui/slider";
 import {
   Select,
   SelectContent,
@@ -38,10 +38,39 @@ const stockExchanges = {
 const StockExchanges: React.FC = () => {
   const [selectedExchanges, setSelectedExchanges] = useState<string[]>(["nyse", "nasdaq", "lse", "sse", "hkse"]);
   const [timeframe, setTimeframe] = useState<string>("all");
+  const [compareMode, setCompareMode] = useState<boolean>(false);
+  const [baseYear, setBaseYear] = useState<number>(2000);
 
+  // Filter data based on selected timeframe
   const filteredData = timeframe === "all" 
     ? stockExchangeData 
     : stockExchangeData.filter(item => item.year >= parseInt(timeframe));
+
+  // Normalize data if compare mode is enabled
+  const displayData = React.useMemo(() => {
+    if (!compareMode) return filteredData;
+    
+    // Find base year values for normalization
+    const baseYearData = stockExchangeData.find(d => d.year === baseYear);
+    if (!baseYearData) return filteredData;
+    
+    return filteredData.map(item => {
+      const normalized: any = { year: item.year };
+      
+      Object.keys(stockExchanges).forEach(key => {
+        const baseValue = baseYearData[key as keyof typeof baseYearData];
+        const currentValue = item[key as keyof typeof item];
+        
+        if (typeof baseValue === 'number' && typeof currentValue === 'number' && baseValue !== 0) {
+          normalized[key] = parseFloat(((currentValue / baseValue) * 100).toFixed(2));
+        } else {
+          normalized[key] = null;
+        }
+      });
+      
+      return normalized;
+    });
+  }, [filteredData, compareMode, baseYear]);
 
   const handleExchangeToggle = (exchange: string) => {
     setSelectedExchanges(prev => 
@@ -50,6 +79,15 @@ const StockExchanges: React.FC = () => {
         : [...prev, exchange]
     );
   };
+
+  const handleBaseYearChange = (value: number[]) => {
+    setBaseYear(value[0]);
+  };
+
+  // Get the earliest available year from data
+  const earliestYear = stockExchangeData[0]?.year || 1950;
+  // Get the latest available year from data
+  const latestYear = stockExchangeData[stockExchangeData.length - 1]?.year || 2023;
 
   return (
     <div className="space-y-6">
@@ -96,16 +134,49 @@ const StockExchanges: React.FC = () => {
           </Select>
         </div>
       </div>
+
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="compareMode"
+            checked={compareMode}
+            onChange={(e) => setCompareMode(e.target.checked)}
+            className="rounded text-primary-600 focus:ring-primary-500"
+          />
+          <label htmlFor="compareMode" className="text-sm font-medium">
+            Normalized Comparison (%)
+          </label>
+        </div>
+        
+        {compareMode && (
+          <div className="w-1/2">
+            <div className="flex justify-between mb-1">
+              <span className="text-xs">Base Year: {baseYear}</span>
+            </div>
+            <Slider 
+              value={[baseYear]} 
+              onValueChange={handleBaseYearChange}
+              min={earliestYear} 
+              max={latestYear} 
+              step={5}
+              className="w-full"
+            />
+          </div>
+        )}
+      </div>
       
       <Card>
         <CardHeader>
-          <CardTitle>Stock Exchange Index Values (1950-2023)</CardTitle>
+          <CardTitle>
+            Stock Exchange Index Values ({compareMode ? `Normalized to ${baseYear} (%)` : '1950-2023'})
+          </CardTitle>
         </CardHeader>
         <CardContent className="h-[500px]">
           <ChartContainer config={{}} className="h-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
-                data={filteredData}
+                data={displayData}
                 margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
@@ -121,8 +192,9 @@ const StockExchanges: React.FC = () => {
                     name={stockExchanges[key as keyof typeof stockExchanges].name} 
                     stroke={stockExchanges[key as keyof typeof stockExchanges].color} 
                     strokeWidth={key === "nyse" ? 2 : 1.5} 
-                    dot={{ r: 3 }} 
-                    activeDot={{ r: 5 }} 
+                    dot={{ r: 2 }} 
+                    activeDot={{ r: 5 }}
+                    connectNulls={true}
                   />
                 ))}
               </LineChart>

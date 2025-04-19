@@ -109,7 +109,27 @@ export const tutorialSteps = [
   }
 ];
 
-// Add the missing data structures that are referenced in the code
+export const stockExchangeData = [
+  { year: 1950, nyse: 200, nasdaq: null, lse: 180, tse: 150, sse: null, hkse: null, euronext: null, bse: null, jsx: null, asx: null },
+  { year: 1955, nyse: 280, nasdaq: null, lse: 220, tse: 165, sse: null, hkse: null, euronext: null, bse: null, jsx: null, asx: null },
+  { year: 1960, nyse: 350, nasdaq: null, lse: 275, tse: 190, sse: null, hkse: null, euronext: 150, bse: null, jsx: null, asx: 120 },
+  { year: 1965, nyse: 420, nasdaq: null, lse: 300, tse: 230, sse: null, hkse: null, euronext: 190, bse: null, jsx: null, asx: 160 },
+  { year: 1970, nyse: 500, nasdaq: 140, lse: 340, tse: 280, sse: null, hkse: 180, euronext: 220, bse: 80, jsx: null, asx: 190 },
+  { year: 1975, nyse: 550, nasdaq: 200, lse: 370, tse: 320, sse: null, hkse: 220, euronext: 270, bse: 100, jsx: null, asx: 210 },
+  { year: 1980, nyse: 700, nasdaq: 260, lse: 430, tse: 400, sse: null, hkse: 280, euronext: 340, bse: 130, jsx: 100, asx: 250 },
+  { year: 1985, nyse: 950, nasdaq: 380, lse: 600, tse: 540, sse: null, hkse: 370, euronext: 420, bse: 180, jsx: 130, asx: 310 },
+  { year: 1990, nyse: 1200, nasdaq: 560, lse: 800, tse: 700, sse: 160, hkse: 500, euronext: 580, bse: 240, jsx: 180, asx: 380 },
+  { year: 1995, nyse: 1600, nasdaq: 900, lse: 1050, tse: 800, sse: 220, hkse: 680, euronext: 740, bse: 320, jsx: 250, asx: 470 },
+  { year: 2000, nyse: 2100, nasdaq: 1800, lse: 1300, tse: 950, sse: 380, hkse: 800, euronext: 950, bse: 420, jsx: 310, asx: 560 },
+  { year: 2005, nyse: 2400, nasdaq: 1950, lse: 1550, tse: 1150, sse: 580, hkse: 950, euronext: 1100, bse: 550, jsx: 380, asx: 650 },
+  { year: 2010, nyse: 2600, nasdaq: 2200, lse: 1700, tse: 1250, sse: 950, hkse: 1200, euronext: 1300, bse: 720, jsx: 480, asx: 780 },
+  { year: 2015, nyse: 2950, nasdaq: 2800, lse: 1850, tse: 1350, sse: 1500, hkse: 1400, euronext: 1480, bse: 900, jsx: 580, asx: 880 },
+  { year: 2020, nyse: 3000, nasdaq: 3200, lse: 1800, tse: 1400, sse: 1600, hkse: 1550, euronext: 1550, bse: 980, jsx: 650, asx: 950 },
+  { year: 2021, nyse: 3250, nasdaq: 3500, lse: 1900, tse: 1450, sse: 1650, hkse: 1600, euronext: 1650, bse: 1050, jsx: 700, asx: 1020 },
+  { year: 2022, nyse: 3350, nasdaq: 3600, lse: 1950, tse: 1480, sse: 1550, hkse: 1580, euronext: 1700, bse: 1100, jsx: 740, asx: 1050 },
+  { year: 2023, nyse: 3500, nasdaq: 3800, lse: 2000, tse: 1500, sse: 1600, hkse: 1650, euronext: 1750, bse: 1200, jsx: 800, asx: 1100 }
+];
+
 export const broadCourses = [
   {
     code: "IB 801",
@@ -231,70 +251,6 @@ export const internationalTradeData = [
   { country: "Japan", year: 2022, exports: 747, imports: 815, balance: -68 }
 ];
 
-export const stockExchangeData = [
-  {
-    name: "New York Stock Exchange",
-    location: "New York, USA",
-    marketCap: 27.2,
-    listedCompanies: 2400,
-    topSectors: ["Financials", "Technology", "Healthcare"],
-    tradingHours: "9:30 AM - 4:00 PM EST",
-    established: 1792,
-    year: 2023
-  },
-  {
-    name: "NASDAQ",
-    location: "New York, USA",
-    marketCap: 24.6,
-    listedCompanies: 3700,
-    topSectors: ["Technology", "Consumer Services", "Healthcare"],
-    tradingHours: "9:30 AM - 4:00 PM EST",
-    established: 1971,
-    year: 2023
-  },
-  {
-    name: "Shanghai Stock Exchange",
-    location: "Shanghai, China",
-    marketCap: 7.9,
-    listedCompanies: 1600,
-    topSectors: ["Financials", "Industrials", "Materials"],
-    tradingHours: "9:30 AM - 3:00 PM CST",
-    established: 1990,
-    year: 2023
-  },
-  {
-    name: "Euronext",
-    location: "Amsterdam, Netherlands",
-    marketCap: 7.3,
-    listedCompanies: 1900,
-    topSectors: ["Financials", "Consumer Staples", "Industrials"],
-    tradingHours: "9:00 AM - 5:40 PM CET",
-    established: 2000,
-    year: 2023
-  },
-  {
-    name: "Japan Exchange Group",
-    location: "Tokyo, Japan",
-    marketCap: 6.8,
-    listedCompanies: 3700,
-    topSectors: ["Technology", "Consumer Goods", "Industrials"],
-    tradingHours: "9:00 AM - 3:00 PM JST",
-    established: 1878,
-    year: 2023
-  },
-  {
-    name: "London Stock Exchange",
-    location: "London, UK",
-    marketCap: 4.2,
-    listedCompanies: 2200,
-    topSectors: ["Financials", "Energy", "Consumer Staples"],
-    tradingHours: "8:00 AM - 4:30 PM GMT",
-    established: 1801,
-    year: 2023
-  }
-];
-
-// Update the supply chain data to include the missing properties
 export const supplyChainData = [
   {
     product: "Electronics",
@@ -415,11 +371,8 @@ export const supplyChainData = [
   }
 ];
 
-// Now, let's enhance the CFP Consulting functionality with some new features.
-
-// Add types for the financial health score
 export interface FinancialHealthScore {
-  overall: number;  // 0-100
+  overall: number;
   components: {
     debt: number;
     savings: number;
@@ -431,7 +384,6 @@ export interface FinancialHealthScore {
   recommendations: string[];
 }
 
-// Add risk/return metrics for different investment allocations
 export const investmentAllocations = [
   {
     name: "Conservative",
