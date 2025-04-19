@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import {
@@ -24,6 +24,26 @@ import { supplyChainData } from "@/data/marketData";
 import { SupplyChainData } from "@/types/market";
 import { TruckIcon, Ship, Clock, DollarSign } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+// Process data to ensure proper grouping by region for line charts
+const processDataForLineCharts = (data: any[], metric: keyof SupplyChainData) => {
+  const regions = [...new Set(data.map(item => item.region))];
+  
+  return regions.map(region => {
+    const regionData = data
+      .filter(item => item.region === region)
+      .sort((a, b) => a.year - b.year);
+      
+    return {
+      name: region,
+      data: regionData.map(item => ({
+        year: item.year,
+        value: item[metric],
+        region: item.region
+      }))
+    };
+  });
+};
 
 const SupplyChain: React.FC = () => {
   const [selectedRegion, setSelectedRegion] = useState<string>("all");
@@ -52,6 +72,19 @@ const SupplyChain: React.FC = () => {
       "Delivery Time": regionData.deliveryTime
     };
   });
+
+  // Prepare line chart data for each region
+  const containerVolumeData = useMemo(() => 
+    processDataForLineCharts(supplyChainData, 'containerVolume'), 
+  []);
+  
+  const freightCostsData = useMemo(() => 
+    processDataForLineCharts(supplyChainData, 'freightCosts'), 
+  []);
+  
+  const deliveryTimeData = useMemo(() => 
+    processDataForLineCharts(supplyChainData, 'deliveryTime'), 
+  []);
 
   // Prepare bar chart data for each region
   const prepareRegionData = (metric: keyof SupplyChainData) => {
@@ -199,26 +232,30 @@ const SupplyChain: React.FC = () => {
               <ChartContainer config={{}} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
-                    data={supplyChainData}
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="year" />
+                    <XAxis 
+                      dataKey="year"
+                      type="number" 
+                      domain={['dataMin', 'dataMax']} 
+                      allowDuplicatedCategory={false}
+                    />
                     <YAxis />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Legend />
-                    {regions.map((region, index) => (
+                    {containerVolumeData.map((region, index) => (
                       <Line 
-                        key={region}
+                        key={`${region.name}-${index}`}
                         type="monotone" 
-                        dataKey="containerVolume" 
-                        name={`${region}`} 
+                        dataKey="value" 
+                        name={region.name} 
+                        data={region.data}
                         stroke={index === 0 ? "#18453B" : index === 1 ? "#7A9B76" : "#A2AAAD"} 
-                        strokeWidth={region === selectedRegion || selectedRegion === "all" ? 2 : 1} 
-                        data={supplyChainData.filter(item => item.region === region)}
+                        strokeWidth={region.name === selectedRegion || selectedRegion === "all" ? 2 : 1}
                         dot={{ r: 3 }} 
                         activeDot={{ r: 5 }} 
-                        opacity={region === selectedRegion || selectedRegion === "all" ? 1 : 0.5}
+                        opacity={region.name === selectedRegion || selectedRegion === "all" ? 1 : 0.5}
                       />
                     ))}
                   </LineChart>
@@ -280,26 +317,30 @@ const SupplyChain: React.FC = () => {
               <ChartContainer config={{}} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
-                    data={supplyChainData}
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="year" />
+                    <XAxis 
+                      dataKey="year"
+                      type="number" 
+                      domain={['dataMin', 'dataMax']} 
+                      allowDuplicatedCategory={false}
+                    />
                     <YAxis />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Legend />
-                    {regions.map((region, index) => (
+                    {deliveryTimeData.map((region, index) => (
                       <Line 
-                        key={region}
+                        key={`${region.name}-${index}`}
                         type="monotone" 
-                        dataKey="deliveryTime" 
-                        name={`${region}`} 
+                        dataKey="value" 
+                        name={region.name}
+                        data={region.data} 
                         stroke={index === 0 ? "#18453B" : index === 1 ? "#7A9B76" : "#A2AAAD"} 
-                        strokeWidth={region === selectedRegion || selectedRegion === "all" ? 2 : 1} 
-                        data={supplyChainData.filter(item => item.region === region)}
+                        strokeWidth={region.name === selectedRegion || selectedRegion === "all" ? 2 : 1}
                         dot={{ r: 3 }} 
                         activeDot={{ r: 5 }} 
-                        opacity={region === selectedRegion || selectedRegion === "all" ? 1 : 0.5}
+                        opacity={region.name === selectedRegion || selectedRegion === "all" ? 1 : 0.5}
                       />
                     ))}
                   </LineChart>

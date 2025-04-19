@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import {
@@ -73,9 +73,9 @@ const EconomicIndicators: React.FC = () => {
   }));
   
   // Process data for line charts
-  const gdpLineData = processDataForLineCharts(economicIndicators, 'gdp');
-  const inflationLineData = processDataForLineCharts(economicIndicators, 'inflation');
-  const unemploymentLineData = processDataForLineCharts(economicIndicators, 'unemployment');
+  const gdpLineData = useMemo(() => processDataForLineCharts(economicIndicators, 'gdp'), []);
+  const inflationLineData = useMemo(() => processDataForLineCharts(economicIndicators, 'inflation'), []);
+  const unemploymentLineData = useMemo(() => processDataForLineCharts(economicIndicators, 'unemployment'), []);
   
   return (
     <div className="space-y-6">
@@ -224,7 +224,7 @@ const EconomicIndicators: React.FC = () => {
                     <Legend />
                     {gdpLineData.map((country, index) => (
                       <Line 
-                        key={country.name}
+                        key={`${country.name}-${index}`}
                         name={country.name}
                         data={country.data}
                         type="monotone" 
@@ -292,7 +292,7 @@ const EconomicIndicators: React.FC = () => {
                     <Legend />
                     {inflationLineData.map((country, index) => (
                       <Line 
-                        key={country.name}
+                        key={`${country.name}-${index}`}
                         name={country.name}
                         data={country.data}
                         type="monotone" 
@@ -333,7 +333,7 @@ const EconomicIndicators: React.FC = () => {
                     <Legend />
                     {unemploymentLineData.map((country, index) => (
                       <Line 
-                        key={country.name}
+                        key={`${country.name}-${index}`}
                         name={country.name}
                         data={country.data}
                         type="monotone" 
