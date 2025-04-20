@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from "react";
 import { exchangeRateData, forecastMethods } from "@/data/marketData";
 import { dateRanges } from "@/data/constants";
@@ -134,15 +135,20 @@ const ExchangeRates: React.FC = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {currencies.map((currency) => {
-          const currentValue = latestData[currency.code as keyof typeof latestData] as number | undefined;
-          const previousValue = previousData[currency.code as keyof typeof previousData] as number | undefined;
+          const currentValue = typeof latestData[currency.code as keyof typeof latestData] === 'number' 
+            ? latestData[currency.code as keyof typeof latestData] as number 
+            : 0;
+          
+          const previousValue = typeof previousData[currency.code as keyof typeof previousData] === 'number'
+            ? previousData[currency.code as keyof typeof previousData] as number
+            : 0;
           
           // Calculate percent change with validation
           let percentChange = 0;
           let changeText = "0.00%";
           let isPositive = true;
           
-          if (typeof currentValue === 'number' && typeof previousValue === 'number' && previousValue !== 0) {
+          if (currentValue !== 0 && previousValue !== 0) {
             percentChange = ((currentValue - previousValue) / previousValue) * 100;
             isPositive = percentChange >= 0;
             changeText = `${isPositive ? '+' : ''}${percentChange.toFixed(2)}%`;
@@ -154,7 +160,7 @@ const ExchangeRates: React.FC = () => {
               code={currency.code}
               name={currency.name}
               icon={currency.icon}
-              value={typeof currentValue === 'number' ? currentValue : 0}
+              value={currentValue}
               change={changeText}
               isPositive={isPositive}
             />
