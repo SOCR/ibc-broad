@@ -90,6 +90,16 @@ export const studentResearchers = [
   { name: "Joshua Hammond" }
 ];
 
+// Market trends data for the Market Trends Overview chart
+export const marketTrendsData = [
+  { year: 2018, sp500: 2506, nasdaq: 6635, dowjones: 23327 },
+  { year: 2019, sp500: 2944, nasdaq: 7729, dowjones: 26486 },
+  { year: 2020, sp500: 3277, nasdaq: 9575, dowjones: 28256 },
+  { year: 2021, sp500: 4297, nasdaq: 14504, dowjones: 34935 },
+  { year: 2022, sp500: 3839, nasdaq: 10788, dowjones: 32197 },
+  { year: 2023, sp500: 4769, nasdaq: 16996, dowjones: 37689 }
+];
+
 // Updated economic indicators with chronological order and non-repeating years
 export const economicIndicators = [
   {
