@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { tutorialSteps } from "@/data/marketData";
@@ -6,13 +5,65 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, BookOpen, Check } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
+// --- Updated Step Definitions: new tutorialSteps array ---
+const tutorialStepsData = [
+  {
+    id: 1,
+    title: "Getting Started: Dashboard Overview",
+    description: "Explore the MSU IBC Dashboard's Overview page. Review key market data, statistics, and trends at a glance. Use tooltips on each stats card for extra context about IBEX Score, State Rankings, and Top International Course.",
+    image: "dashboard-1.png"
+  },
+  {
+    id: 2,
+    title: "IBEX Analysis: State and National Data",
+    description: "Analyze State IBEX Scores using interactive charts and filters. Compare rankings and deep dive into longitudinal trends for each state.",
+    image: "ibex-analysis-2.png"
+  },
+  {
+    id: 3,
+    title: "Market Data: Economic, Exchange, and Stock Trends",
+    description: "Navigate the Market Data page. View Exchange Rate, Economic Indicator, and Stock Exchange charts. Adjust date ranges, and explore dynamic charting features.",
+    image: "market-data-3.png"
+  },
+  {
+    id: 4,
+    title: "Case Studies & CFP Consulting",
+    description: "Access detailed case studies and try the CFP Consulting tool. Plan your financial future, assess retirement readiness, and review simulated plans using the CFP features.",
+    image: "cfp-consulting-4.png"
+  },
+  {
+    id: 5,
+    title: "Trade & Supply Chain Analytics",
+    description: "Deep dive into Global Trade, Regional Performance, Supply Chain, and International Trade analytics. Use the filtering, trend, and export features to analyze global trade and logistics data.",
+    image: "trade-supply-5.png"
+  },
+  {
+    id: 6,
+    title: "Browse Broad College Courses",
+    description: "Browse undergraduate and graduate-level courses at MSU Broad College. Filter by department or category, and search to find the right class for your professional goals.",
+    image: "broad-courses-6.png"
+  },
+  {
+    id: 7,
+    title: "Meet the IBC Team",
+    description: "Get to know the IBC team members and student researchers supporting international business education and research at MSU.",
+    image: "team-7.png"
+  },
+  {
+    id: 8,
+    title: "You’re All Set! Support & Feedback",
+    description: "Contact the IBC team or visit the About page for more information, support, and resources about the MSU IBC Dashboard and its initiatives.",
+    image: "about-8.png"
+  }
+];
+
 const Tutorial: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const { toast } = useToast();
   
-  const totalSteps = tutorialSteps.length;
-  const step = tutorialSteps.find(s => s.id === currentStep) || tutorialSteps[0];
+  const totalSteps = tutorialStepsData.length;
+  const step = tutorialStepsData.find(s => s.id === currentStep) || tutorialStepsData[0];
   
   const handlePrevious = () => {
     if (currentStep > 1) {
@@ -131,7 +182,7 @@ const Tutorial: React.FC = () => {
       </Card>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {tutorialSteps.map((tutorialStep) => (
+        {tutorialStepsData.map((tutorialStep) => (
           <Card 
             key={tutorialStep.id}
             className={`cursor-pointer hover:shadow-md transition-shadow ${

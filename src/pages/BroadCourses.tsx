@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,92 +12,62 @@ import {
 import { GraduationCap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-// Add more Broad College undergraduate courses based on the provided document
-const additionalCourses = [
-  {
-    code: "ACC 201",
-    title: "Principles of Financial Accounting",
-    credits: 3,
-    department: "Accounting",
-    category: "Core",
-    description: "Introduction to financial statements and the accounting cycle for business enterprises."
-  },
-  {
-    code: "ACC 202",
-    title: "Principles of Management Accounting",
-    credits: 3,
-    department: "Accounting",
-    category: "Core",
-    description: "Management accounting concepts and practices. Costing systems, budgeting, and financial analysis for management decision making."
-  },
-  {
-    code: "BUS 250",
-    title: "Business Communications",
-    credits: 3,
-    department: "Business",
-    category: "Core",
-    description: "Written and oral communication in a business setting. Communication theory, analysis, and practical applications."
-  },
-  {
-    code: "FI 311",
-    title: "Financial Management",
-    credits: 3,
-    department: "Finance",
-    category: "Core",
-    description: "Fundamentals of business finance. Investment, financing, and dividend decisions of firms, risk, and return."
-  },
-  {
-    code: "MKT 300",
-    title: "Principles of Marketing",
-    credits: 3,
-    department: "Marketing",
-    category: "Core",
-    description: "Marketing concepts, methods, and strategic foundation for business decisions."
-  },
-  {
-    code: "MGT 315",
-    title: "Managing Human Resources and Organizational Behavior",
-    credits: 3,
-    department: "Management",
-    category: "Core",
-    description: "Human resource management and organizational behavior theories and practices in modern organizations."
-  },
-  {
-    code: "SCM 303",
-    title: "Introduction to Supply Chain Management",
-    credits: 3,
-    department: "Supply Chain Management",
-    category: "Core",
-    description: "Overview of supply chain management, including procurement, operations, logistics, and integration across functions."
-  },
-  {
-    code: "ITM 309",
-    title: "Business Information Systems and Technology",
-    credits: 3,
-    department: "Information Technology",
-    category: "Core",
-    description: "Information systems concepts, technologies, and their applications in business."
-  },
-  {
-    code: "GBL 323",
-    title: "Introduction to Business Law",
-    credits: 3,
-    department: "Business Law",
-    category: "Core",
-    description: "Introduction to the legal and regulatory environment of business."
-  },
-  {
-    code: "IBUS 330",
-    title: "International Business",
-    credits: 3,
-    department: "International Business",
-    category: "Core",
-    description: "International dimensions of business: trade, investment, and multinational firms' operations."
-  }
+// --- Expanded Broad College courses list ---
+
+// *** Undergrad Core Courses ***
+const undergraduateCore = [
+  { code: "ACC 201", title: "Principles of Financial Accounting", credits: 3, department: "Accounting", category: "Undergraduate Core", description: "Introduction to financial statements and the accounting cycle for business enterprises." },
+  { code: "ACC 202", title: "Principles of Management Accounting", credits: 3, department: "Accounting", category: "Undergraduate Core", description: "Management accounting concepts and practices." },
+  { code: "BUS 250", title: "Business Communications", credits: 3, department: "Business", category: "Undergraduate Core", description: "Written and oral business communications." },
+  { code: "FI 311", title: "Financial Management", credits: 3, department: "Finance", category: "Undergraduate Core", description: "Fundamentals of business finance for organizations." },
+  { code: "MKT 300", title: "Principles of Marketing", credits: 3, department: "Marketing", category: "Undergraduate Core", description: "Basic marketing concepts and strategic foundation." },
+  { code: "MGT 315", title: "Managing Human Resources and Organizational Behavior", credits: 3, department: "Management", category: "Undergraduate Core", description: "HRM and OB in modern organizations." },
+  { code: "SCM 303", title: "Introduction to Supply Chain Management", credits: 3, department: "Supply Chain", category: "Undergraduate Core", description: "Overview of supply chain including procurement, logistics, integration." },
+  { code: "ITM 309", title: "Business Information Systems and Technology", credits: 3, department: "IT", category: "Undergraduate Core", description: "Information systems, technology, and their applications in business." },
+  { code: "GBL 323", title: "Introduction to Business Law", credits: 3, department: "Business Law", category: "Undergraduate Core", description: "Legal and regulatory business environment." },
+  { code: "IBUS 330", title: "International Business", credits: 3, department: "International Business", category: "Undergraduate Core", description: "International dimensions of business: trade, investment, MNCs." },
 ];
 
-// Combine with existing courses
-const allBroadCourses = [...broadCourses, ...additionalCourses];
+// *** Undergraduate Electives ***
+const undergraduateElectives = [
+  { code: "SCM 371", title: "Procurement and Sourcing", credits: 3, department: "Supply Chain", category: "Undergraduate Elective", description: "Analysis of procurement, negotiations, supplier management." },
+  { code: "MKT 310", title: "International Business", credits: 3, department: "Marketing", category: "Undergraduate Elective", description: "International marketing concepts and practices." },
+  { code: "FI 320", title: "Introduction to Investments", credits: 3, department: "Finance", category: "Undergraduate Elective", description: "Markets and instruments, securities analysis and portfolio management." },
+  { code: "ITM 317", title: "Digital Business & Emerging Technologies", credits: 3, department: "IT", category: "Undergraduate Elective", description: "Digitalization, disruptive innovations, and technology in business." },
+  { code: "MGT 409", title: "Business Policy and Strategic Management", credits: 3, department: "Management", category: "Undergraduate Elective", description: "Strategy formulation, case analysis, and implementation." },
+  { code: "ENT 321", title: "Entrepreneurial Mindset and Skills", credits: 3, department: "Entrepreneurship", category: "Undergraduate Elective", description: "Core entrepreneurial principles and skill development." },
+  { code: "HRM 360", title: "Negotiation", credits: 3, department: "Human Resource", category: "Undergraduate Elective", description: "Negotiation strategies and simulations." },
+];
+
+// *** Graduate Core Courses ***
+const graduateCore = [
+  { code: "MBA 801", title: "An Introduction to Accounting", credits: 2, department: "Accounting", category: "Graduate Core", description: "Accounting principles for MBA students." },
+  { code: "MBA 802", title: "Financial Accounting", credits: 2, department: "Accounting", category: "Graduate Core", description: "Analysis of financial statements and reporting." },
+  { code: "MBA 820", title: "Global Supply Chain Management", credits: 3, department: "Supply Chain", category: "Graduate Core", description: "Design and management of global supply chains." },
+  { code: "MBA 823", title: "Information Technology Management", credits: 2, department: "IT", category: "Graduate Core", description: "Management of information systems in business." },
+  { code: "MBA 824", title: "Corporate Finance", credits: 2, department: "Finance", category: "Graduate Core", description: "Corporate financial decisions and value creation." },
+  { code: "MBA 829", title: "Marketing Management", credits: 2, department: "Marketing", category: "Graduate Core", description: "Strategies for marketing in dynamic environments." },
+  { code: "MBA 841", title: "Strategic Management", credits: 2, department: "Management", category: "Graduate Core", description: "Strategy processes, global markets, and competitive environments." },
+  { code: "MBA 850", title: "International Financial Management", credits: 3, department: "Finance", category: "Graduate Core", description: "Financial management in an international context." },
+  { code: "MBA 854", title: "Human Resource Management", credits: 2, department: "Human Resource", category: "Graduate Core", description: "Advanced HRM concepts in the global context." },
+  { code: "MBA 811", title: "Global Strategy", credits: 3, department: "Management", category: "Graduate Core", description: "Analysis of globalization and strategy development." },
+];
+
+// *** Graduate Electives ***
+const graduateElectives = [
+  { code: "FI 850", title: "International Financial Management", credits: 3, department: "Finance", category: "Graduate Elective", description: "Deep dive into global financial markets and exposure management." },
+  { code: "MGT 808", title: "Leadership and Teamwork", credits: 2, department: "Management", category: "Graduate Elective", description: "Developing strong teams and effective leadership styles." },
+  { code: "SCM 892", title: "Supply Chain Analytics", credits: 3, department: "Supply Chain", category: "Graduate Elective", description: "Analytics for managing supply chain operations and strategies." },
+  { code: "MKT 851", title: "International Marketing", credits: 2, department: "Marketing", category: "Graduate Elective", description: "Cross-border marketing challenges and global brand strategies." },
+];
+
+// **** Consolidate all courses, including previously in the file ****
+const allBroadCourses = [
+  ...undergraduateCore,
+  ...undergraduateElectives,
+  ...graduateCore,
+  ...graduateElectives,
+];
 
 const BroadCourses: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");

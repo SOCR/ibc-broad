@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -34,6 +33,29 @@ const TeamMemberCard: React.FC<{
   );
 };
 
+// --- New: List of student researchers (add/update as needed) ---
+const studentResearchers = [
+  {
+    name: "Albert E. Williams",
+    title: "Student Researcher",
+    bio: "Specializes in global marketing analytics and supports IBC research initiatives.",
+    image: "/lovable-uploads/placeholder.svg" // replace with actual photo if available
+  },
+  {
+    name: "Amelia R. Smith",
+    title: "Student Researcher",
+    bio: "Focuses on international business research and community engagement.",
+    image: "/lovable-uploads/placeholder.svg"
+  },
+  {
+    name: "Landon Lee",
+    title: "Student Researcher",
+    bio: "Assists with the globalEDGE website and benchmarking data collection.",
+    image: "/lovable-uploads/placeholder.svg"
+  }
+  // Add more students as needed
+];
+
 const Team: React.FC = () => {
   return (
     <div className="space-y-6">
@@ -45,6 +67,7 @@ const Team: React.FC = () => {
         </div>
       </div>
       
+      {/* IBC Leaders & Staff */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {ibcTeamMembers.map((member) => (
           <TeamMemberCard 
@@ -55,6 +78,22 @@ const Team: React.FC = () => {
             image={member.image}
           />
         ))}
+      </div>
+
+      {/* Student Researchers */}
+      <div>
+        <h2 className="mt-8 mb-2 text-xl font-semibold text-msu-green">Student Researchers</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {studentResearchers.map((member) => (
+            <TeamMemberCard 
+              key={member.name}
+              name={member.name}
+              title={member.title}
+              bio={member.bio}
+              image={member.image}
+            />
+          ))}
+        </div>
       </div>
       
       <Card>
