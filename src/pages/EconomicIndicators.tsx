@@ -30,8 +30,10 @@ const useProcessedData = () => {
     const countries = [...new Set(economicIndicators.map(item => item.country))];
     const years = [...new Set(economicIndicators.map(item => item.year))].sort((a, b) => a - b);
     
-    // Process GDP growth data
+    // Process GDP growth data - fix: create properly structured data for bar chart
     const gdpGrowthData = [];
+    
+    // Calculate growth rates for each country across years
     countries.forEach(country => {
       const countryData = economicIndicators
         .filter(item => item.country === country)
@@ -47,7 +49,7 @@ const useProcessedData = () => {
           year: currentYear.year,
           growth: parseFloat(growth.toFixed(2)),
           prevYear: prevYear.year,
-          yearLabel: currentYear.year.toString()
+          yearLabel: `${country} ${currentYear.year}` // Fix: Add country name to make label unique
         });
       }
     });
@@ -274,27 +276,31 @@ const EconomicIndicators: React.FC = () => {
             <CardContent className="h-80">
               <ChartContainer config={{}} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                  <BarChart 
+                    data={gdpGrowthData} 
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                  >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis 
                       dataKey="yearLabel"
-                      tickFormatter={(value) => value}
+                      tickFormatter={(value) => value.split(' ')[1]} // Only show year in tick labels
                     />
                     <YAxis />
                     <Tooltip 
                       formatter={(value) => [`${value}%`, "Growth"]}
-                      labelFormatter={(label, payload) => {
-                        if (payload && payload.length > 0) {
-                          return `${payload[0].payload.country} (${payload[0].payload.year})`;
-                        }
-                        return label;
+                      labelFormatter={(label) => {
+                        const parts = label.split(' ');
+                        return `${parts[0]} (${parts[1]})`;
                       }}
                     />
                     <Legend />
                     <Bar 
                       dataKey="growth" 
                       name="Growth %" 
-                      fill="#18453B" 
+                      fill="#18453B"
+                      // Color bars based on growth value
+                      // Positive growth: green, Negative growth: red
+                      fill={(data) => data.growth >= 0 ? "#18453B" : "#D32F2F"}
                     />
                   </BarChart>
                 </ResponsiveContainer>
