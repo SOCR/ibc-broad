@@ -65,6 +65,11 @@ export const ExchangeRateChart: React.FC<ExchangeRateChartProps> = ({
   forecastMethods,
   lastActualDate
 }) => {
+  // Ensure chartData is valid before rendering
+  const validChartData = React.useMemo(() => {
+    return chartData.filter(item => item && typeof item === 'object');
+  }, [chartData]);
+
   return (
     <Card>
       <CardHeader>
@@ -123,82 +128,93 @@ export const ExchangeRateChart: React.FC<ExchangeRateChartProps> = ({
       <CardContent className="h-[500px]">
         <ChartContainer config={{}} className="h-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={chartData}
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="date"
-                tickFormatter={(value) => {
-                  // For monthly data, show just year if January
-                  const dateParts = value.split("-");
-                  const month = dateParts[1];
-                  const year = dateParts[0];
-                  return month === "01" ? year : `${year}-${month}`;
-                }}
-              />
-              <YAxis />
-              <Tooltip 
-                content={(props) => {
-                  if (!props.active || !props.payload) return null;
-                  const payload = props.payload;
-                  const date = props.label;
+            {validChartData.length > 0 ? (
+              <LineChart
+                data={validChartData}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis 
+                  dataKey="date"
+                  tickFormatter={(value) => {
+                    // For monthly data, show just year if January
+                    if (!value) return "";
+                    const dateParts = value.split("-");
+                    if (!dateParts || dateParts.length < 2) return value;
+                    const month = dateParts[1];
+                    const year = dateParts[0];
+                    return month === "01" ? year : `${year}-${month}`;
+                  }}
+                />
+                <YAxis domain={['auto', 'auto']} />
+                <Tooltip 
+                  content={(props) => {
+                    if (!props.active || !props.payload || props.payload.length === 0) return null;
+                    const payload = props.payload;
+                    const date = props.label;
 
-                  return (
-                    <div className="bg-white p-3 border rounded shadow">
-                      <p className="font-medium">Date: {date}</p>
-                      <div className="mt-2">
-                        {payload.map((entry: any, index: number) => {
-                          const currency = currencies.find(c => c.code === entry.dataKey);
-                          if (!currency) return null;
-                          return (
-                            <div key={index} className="flex items-center justify-between mt-1">
-                              <div className="flex items-center">
-                                <div 
-                                  className="w-3 h-3 rounded-full mr-2" 
-                                  style={{ backgroundColor: entry.color }}
-                                />
-                                <span>{currency.name}</span>
+                    return (
+                      <div className="bg-white p-3 border rounded shadow">
+                        <p className="font-medium">Date: {date}</p>
+                        <div className="mt-2">
+                          {payload.map((entry: any, index: number) => {
+                            if (!entry || entry.value === undefined) return null;
+                            
+                            const currency = currencies.find(c => c.code === entry.dataKey);
+                            if (!currency) return null;
+                            
+                            return (
+                              <div key={index} className="flex items-center justify-between mt-1">
+                                <div className="flex items-center">
+                                  <div 
+                                    className="w-3 h-3 rounded-full mr-2" 
+                                    style={{ backgroundColor: entry.color }}
+                                  />
+                                  <span>{currency.name}</span>
+                                </div>
+                                <span className="font-mono ml-4">{entry.value.toFixed(2)}</span>
                               </div>
-                              <span className="font-mono ml-4">{entry.value.toFixed(2)}</span>
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
+                        </div>
+                        {props.payload[0]?.payload?.isForecasted && (
+                          <p className="text-xs mt-2 text-amber-600 font-medium">
+                            Forecasted value
+                          </p>
+                        )}
                       </div>
-                      {props.payload[0]?.payload?.isForecasted && (
-                        <p className="text-xs mt-2 text-amber-600 font-medium">
-                          Forecasted value
-                        </p>
-                      )}
-                    </div>
-                  );
-                }}
-              />
-              <Legend />
-              {enableForecast && lastActualDate && (
-                <ReferenceArea
-                  x1={lastActualDate}
-                  x2={chartData[chartData.length - 1].date}
-                  stroke="none"
-                  fill="#f5f5f5"
-                  fillOpacity={0.3}
+                    );
+                  }}
                 />
-              )}
-              {currencies.map((currency) => (
-                <Line 
-                  key={currency.code}
-                  type="monotone" 
-                  dataKey={currency.code} 
-                  name={currency.name} 
-                  stroke={currency.color} 
-                  strokeWidth={1.5} 
-                  dot={{ r: 3 }} 
-                  activeDot={{ r: 5 }}
-                  connectNulls
-                />
-              ))}
-            </LineChart>
+                <Legend />
+                {enableForecast && lastActualDate && (
+                  <ReferenceArea
+                    x1={lastActualDate}
+                    x2={validChartData[validChartData.length - 1]?.date}
+                    stroke="none"
+                    fill="#f5f5f5"
+                    fillOpacity={0.3}
+                  />
+                )}
+                {currencies.map((currency) => (
+                  <Line 
+                    key={currency.code}
+                    type="monotone" 
+                    dataKey={currency.code} 
+                    name={currency.name} 
+                    stroke={currency.color} 
+                    strokeWidth={1.5} 
+                    dot={{ r: 3 }} 
+                    activeDot={{ r: 5 }}
+                    connectNulls={true}
+                  />
+                ))}
+              </LineChart>
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-muted-foreground">No data available for the selected range</p>
+              </div>
+            )}
           </ResponsiveContainer>
         </ChartContainer>
       </CardContent>

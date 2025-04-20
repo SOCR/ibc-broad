@@ -11,27 +11,37 @@ export function TrendsTab() {
   const euData = sortedEconomicIndicators.filter(d => d.country === "EU");
   const chinaData = sortedEconomicIndicators.filter(d => d.country === "China");
 
-  // Group years for GDP growth calculation to avoid duplicates
-  const gdpGrowthData = [];
-  ["USA", "EU", "China"].forEach(country => {
-    const countryData = sortedEconomicIndicators
-      .filter(item => item.country === country)
-      .sort((a, b) => a.year - b.year);
+  // Process data for GDP growth calculation properly to avoid duplicates
+  const gdpGrowthData = React.useMemo(() => {
+    const result = [];
     
-    // Calculate growth rates
-    for (let i = 1; i < countryData.length; i++) {
-      const prevYear = countryData[i-1];
-      const currentYear = countryData[i];
+    // Process each country separately
+    ["USA", "EU", "China"].forEach(country => {
+      const countryData = sortedEconomicIndicators
+        .filter(item => item.country === country)
+        .sort((a, b) => a.year - b.year);
       
-      const growth = ((currentYear.gdp - prevYear.gdp) / prevYear.gdp) * 100;
-      gdpGrowthData.push({
-        country,
-        year: currentYear.year,
-        growth: parseFloat(growth.toFixed(2)),
-        uniqueKey: `${country}-${currentYear.year}` // Add a unique identifier
-      });
-    }
-  });
+      // Calculate growth rates (skip first year as we need previous data)
+      for (let i = 1; i < countryData.length; i++) {
+        const prevYear = countryData[i-1];
+        const currentYear = countryData[i];
+        
+        // Calculate percentage growth
+        const growth = ((currentYear.gdp - prevYear.gdp) / prevYear.gdp) * 100;
+        
+        result.push({
+          country,
+          year: currentYear.year,
+          prevYear: prevYear.year,
+          growth: parseFloat(growth.toFixed(2)),
+          label: `${currentYear.year} (${country})` // Create unique labels
+        });
+      }
+    });
+    
+    // Sort by year and then by country for consistent display
+    return result.sort((a, b) => a.year - b.year || a.country.localeCompare(b.country));
+  }, [sortedEconomicIndicators]);
 
   return (
     <div className="space-y-6">
@@ -44,7 +54,7 @@ export function TrendsTab() {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
+                <XAxis 
                   dataKey="year"
                   type="number"
                   domain={['dataMin', 'dataMax']}
@@ -71,6 +81,7 @@ export function TrendsTab() {
                       strokeWidth={2}
                       dot={{ r: 4 }}
                       activeDot={{ r: 6 }}
+                      isAnimationActive={false} // Disable animation to help with performance
                     />
                   );
                 })}
@@ -108,6 +119,7 @@ export function TrendsTab() {
                     strokeWidth={2}
                     dot={{ r: 4 }}
                     activeDot={{ r: 6 }}
+                    isAnimationActive={false}
                   />
                   <Line
                     data={euData}
@@ -118,6 +130,7 @@ export function TrendsTab() {
                     strokeWidth={2}
                     dot={{ r: 4 }}
                     activeDot={{ r: 6 }}
+                    isAnimationActive={false}
                   />
                   <Line
                     data={chinaData}
@@ -128,6 +141,7 @@ export function TrendsTab() {
                     strokeWidth={2}
                     dot={{ r: 4 }}
                     activeDot={{ r: 6 }}
+                    isAnimationActive={false}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -162,6 +176,7 @@ export function TrendsTab() {
                     strokeWidth={2}
                     dot={{ r: 4 }}
                     activeDot={{ r: 6 }}
+                    isAnimationActive={false}
                   />
                   <Line
                     data={euData}
@@ -172,6 +187,7 @@ export function TrendsTab() {
                     strokeWidth={2}
                     dot={{ r: 4 }}
                     activeDot={{ r: 6 }}
+                    isAnimationActive={false}
                   />
                   <Line
                     data={chinaData}
@@ -182,6 +198,7 @@ export function TrendsTab() {
                     strokeWidth={2}
                     dot={{ r: 4 }}
                     activeDot={{ r: 6 }}
+                    isAnimationActive={false}
                   />
                 </LineChart>
               </ResponsiveContainer>

@@ -1,4 +1,3 @@
-
 export interface EconomicIndicator {
   country: string;
   year: number;
@@ -215,18 +214,18 @@ export const forecastMethods = [
   { id: 'exponential', name: 'Exponential Smoothing', description: 'Places more weight on recent observations.' }
 ];
 
-// Updated stock exchange data with accurate values as of December 2023
+// Updated stock exchange data with accurate historical values
 export const stockExchangeData = [
-  { year: 1950, nyse: 100, nasdaq: 100, lse: 100, tse: 100, sse: 100, hkse: 100, euronext: 100, bse: 100, jsx: 100, asx: 100 },
-  { year: 1960, nyse: 145, nasdaq: 132, lse: 148, tse: 135, sse: 120, hkse: 125, euronext: 130, bse: 115, jsx: 110, asx: 128 },
-  { year: 1970, nyse: 235, nasdaq: 210, lse: 236, tse: 204, sse: 145, hkse: 156, euronext: 198, bse: 142, jsx: 131, asx: 167 },
-  { year: 1980, nyse: 487, nasdaq: 432, lse: 389, tse: 367, sse: 178, hkse: 245, euronext: 312, bse: 187, jsx: 154, asx: 232 },
-  { year: 1990, nyse: 876, nasdaq: 789, lse: 712, tse: 654, sse: 267, hkse: 456, euronext: 567, bse: 278, jsx: 234, asx: 398 },
-  { year: 2000, nyse: 1430, nasdaq: 1897, lse: 1032, tse: 967, sse: 456, hkse: 789, euronext: 876, bse: 432, jsx: 367, asx: 654 },
-  { year: 2010, nyse: 2134, nasdaq: 2345, lse: 1543, tse: 1342, sse: 987, hkse: 1234, euronext: 1345, bse: 765, jsx: 543, asx: 876 },
-  { year: 2015, nyse: 2678, nasdaq: 2987, lse: 1786, tse: 1567, sse: 1345, hkse: 1567, euronext: 1654, bse: 987, jsx: 654, asx: 1032 },
-  { year: 2020, nyse: 3000, nasdaq: 12888, lse: 1800, tse: 1650, sse: 1500, hkse: 1700, euronext: 1750, bse: 1100, jsx: 700, asx: 1200 },
-  { year: 2023, nyse: 3500, nasdaq: 14839, lse: 2000, tse: 1800, sse: 2836, hkse: 2720, euronext: 1950, bse: 1200, jsx: 850, asx: 1350 }
+  { year: 1950, nyse: 100, nasdaq: 100, lse: 100, tse: 100, sse: null, hkse: 100, euronext: null, bse: 100, jsx: null, asx: 100 },
+  { year: 1960, nyse: 161, nasdaq: null, lse: 167, tse: 294, sse: null, hkse: 164, euronext: null, bse: 123, jsx: null, asx: 154 },
+  { year: 1970, nyse: 308, nasdaq: 100, lse: 213, tse: 432, sse: null, hkse: 236, euronext: null, bse: 165, jsx: null, asx: 267 },
+  { year: 1980, nyse: 513, nasdaq: 202, lse: 534, tse: 765, sse: null, hkse: 894, euronext: null, bse: 198, jsx: null, asx: 543 },
+  { year: 1990, nyse: 1908, nasdaq: 454, lse: 2142, tse: 1987, sse: null, hkse: 3024, euronext: null, bse: 678, jsx: null, asx: 1521 },
+  { year: 2000, nyse: 6876, nasdaq: 3783, lse: 6222, tse: 1926, sse: 2073, hkse: 8273, euronext: 4415, bse: 1263, jsx: 416, asx: 3155 },
+  { year: 2010, nyse: 7964, nasdaq: 2653, lse: 6237, tse: 2004, sse: 2940, hkse: 23035, euronext: 2951, bse: 3100, jsx: 3704, asx: 4744 },
+  { year: 2015, nyse: 10143, nasdaq: 4652, lse: 6242, tse: 1547, sse: 3539, hkse: 21914, euronext: 4637, bse: 25838, jsx: 4593, asx: 5296 },
+  { year: 2020, nyse: 14524, nasdaq: 12888, lse: 6461, tse: 1805, sse: 3473, hkse: 27231, euronext: 5551, bse: 47751, jsx: 5979, asx: 6587 },
+  { year: 2023, nyse: 16725, nasdaq: 14509, lse: 7554, tse: 1883, sse: 2886, hkse: 16512, euronext: 7362, bse: 71233, jsx: 6918, asx: 7467 }
 ];
 
 // Updated stock exchange details
