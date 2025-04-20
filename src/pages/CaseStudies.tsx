@@ -1,8 +1,9 @@
 
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Download } from "lucide-react";
+import { FileText, Download, Calculator } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const CaseStudies = () => {
   const caseStudies = [
@@ -36,6 +37,18 @@ const CaseStudies = () => {
         <p className="text-muted-foreground">
           Research and case studies from MSU Broad College International Business Center.
         </p>
+      </div>
+      
+      <div className="flex items-center justify-between bg-muted/50 p-4 rounded-lg mb-4">
+        <div className="flex items-center">
+          <Calculator className="h-5 w-5 mr-2 text-msu-green" />
+          <span className="font-medium">Looking for financial planning tools?</span>
+        </div>
+        <Button asChild variant="outline">
+          <Link to="/cfp-consulting" className="flex items-center">
+            Visit CFP Consulting Tools
+          </Link>
+        </Button>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

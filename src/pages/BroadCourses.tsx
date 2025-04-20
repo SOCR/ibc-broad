@@ -13,17 +13,104 @@ import {
 import { GraduationCap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
+// Add more Broad College undergraduate courses based on the provided document
+const additionalCourses = [
+  {
+    code: "ACC 201",
+    title: "Principles of Financial Accounting",
+    credits: 3,
+    department: "Accounting",
+    category: "Core",
+    description: "Introduction to financial statements and the accounting cycle for business enterprises."
+  },
+  {
+    code: "ACC 202",
+    title: "Principles of Management Accounting",
+    credits: 3,
+    department: "Accounting",
+    category: "Core",
+    description: "Management accounting concepts and practices. Costing systems, budgeting, and financial analysis for management decision making."
+  },
+  {
+    code: "BUS 250",
+    title: "Business Communications",
+    credits: 3,
+    department: "Business",
+    category: "Core",
+    description: "Written and oral communication in a business setting. Communication theory, analysis, and practical applications."
+  },
+  {
+    code: "FI 311",
+    title: "Financial Management",
+    credits: 3,
+    department: "Finance",
+    category: "Core",
+    description: "Fundamentals of business finance. Investment, financing, and dividend decisions of firms, risk, and return."
+  },
+  {
+    code: "MKT 300",
+    title: "Principles of Marketing",
+    credits: 3,
+    department: "Marketing",
+    category: "Core",
+    description: "Marketing concepts, methods, and strategic foundation for business decisions."
+  },
+  {
+    code: "MGT 315",
+    title: "Managing Human Resources and Organizational Behavior",
+    credits: 3,
+    department: "Management",
+    category: "Core",
+    description: "Human resource management and organizational behavior theories and practices in modern organizations."
+  },
+  {
+    code: "SCM 303",
+    title: "Introduction to Supply Chain Management",
+    credits: 3,
+    department: "Supply Chain Management",
+    category: "Core",
+    description: "Overview of supply chain management, including procurement, operations, logistics, and integration across functions."
+  },
+  {
+    code: "ITM 309",
+    title: "Business Information Systems and Technology",
+    credits: 3,
+    department: "Information Technology",
+    category: "Core",
+    description: "Information systems concepts, technologies, and their applications in business."
+  },
+  {
+    code: "GBL 323",
+    title: "Introduction to Business Law",
+    credits: 3,
+    department: "Business Law",
+    category: "Core",
+    description: "Introduction to the legal and regulatory environment of business."
+  },
+  {
+    code: "IBUS 330",
+    title: "International Business",
+    credits: 3,
+    department: "International Business",
+    category: "Core",
+    description: "International dimensions of business: trade, investment, and multinational firms' operations."
+  }
+];
+
+// Combine with existing courses
+const allBroadCourses = [...broadCourses, ...additionalCourses];
+
 const BroadCourses: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterDepartment, setFilterDepartment] = useState("all");
   const [filterCategory, setFilterCategory] = useState("all");
   
   // Get unique departments and categories for filters
-  const departments = ["all", ...Array.from(new Set(broadCourses.map(course => course.department)))];
-  const categories = ["all", ...Array.from(new Set(broadCourses.map(course => course.category)))];
+  const departments = ["all", ...Array.from(new Set(allBroadCourses.map(course => course.department)))];
+  const categories = ["all", ...Array.from(new Set(allBroadCourses.map(course => course.category)))];
   
   // Filter courses based on search term and selected filters
-  const filteredCourses = broadCourses.filter(course => {
+  const filteredCourses = allBroadCourses.filter(course => {
     const matchesSearch = 
       course.code.toLowerCase().includes(searchTerm.toLowerCase()) || 
       course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -41,7 +128,7 @@ const BroadCourses: React.FC = () => {
         <h1 className="text-2xl font-bold">MSU Broad College Courses</h1>
         <div className="flex items-center">
           <GraduationCap className="mr-2 h-6 w-6 text-msu-green" />
-          <span className="font-semibold">Total Courses: {broadCourses.length}</span>
+          <span className="font-semibold">Total Courses: {allBroadCourses.length}</span>
         </div>
       </div>
       

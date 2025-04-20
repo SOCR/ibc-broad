@@ -43,15 +43,16 @@ const tradeItems = [
   { title: "International Trade", path: "/international-trade", icon: ShipIcon },
 ];
 
+const caseStudiesItems = [
+  { title: "Case Studies", path: "/case-studies", icon: FileText },
+  { title: "CFP Consulting", path: "/cfp-consulting", icon: Calculator },
+];
+
 const resourceItems = [
   { title: "Broad Courses", path: "/broad-courses", icon: GraduationCap },
   { title: "IBC Team", path: "/team", icon: Users },
   { title: "Tutorial", path: "/tutorial", icon: BookOpen },
   { title: "About", path: "/about", icon: InfoIcon },
-];
-
-const caseStudiesItems = [
-  { title: "Case Studies", path: "/case-studies", icon: FileText }
 ];
 
 export function AppSidebar() {
