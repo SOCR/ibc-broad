@@ -123,7 +123,7 @@ const SupplyChain: React.FC = () => {
         </button>
         {regions.map(region => (
           <button
-            key={region}
+            key={`region-${region}`}
             onClick={() => setSelectedRegion(region)}
             className={`px-4 py-2 rounded-full text-sm font-medium ${
               selectedRegion === region
@@ -284,7 +284,7 @@ const SupplyChain: React.FC = () => {
                     <Legend />
                     {regions.map((region, index) => (
                       <Bar 
-                        key={region}
+                        key={`bar-${region}`}
                         dataKey="value" 
                         name={region} 
                         fill={index === 0 ? "#18453B" : index === 1 ? "#7A9B76" : "#A2AAAD"}
@@ -294,7 +294,7 @@ const SupplyChain: React.FC = () => {
                           .filter(item => item.region === region)
                           .map((entry, i) => (
                             <Cell 
-                              key={`cell-${i}`} 
+                              key={`cell-${i}-${region}`} 
                               fill={index === 0 ? "#18453B" : index === 1 ? "#7A9B76" : "#A2AAAD"} 
                               opacity={region === selectedRegion || selectedRegion === "all" ? 1 : 0.5}
                             />

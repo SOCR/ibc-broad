@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -67,7 +68,7 @@ const InternationalTrade: React.FC = () => {
       <div className="flex space-x-4 overflow-x-auto pb-2">
         {Array.from(new Set(internationalTradeData.map(item => item.year))).map(year => (
           <button
-            key={year}
+            key={`year-${year}`}
             onClick={() => setSelectedYear(year)}
             className={`px-4 py-2 rounded-full text-sm font-medium ${
               selectedYear === year
