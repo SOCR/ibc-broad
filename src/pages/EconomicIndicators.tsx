@@ -297,10 +297,7 @@ const EconomicIndicators: React.FC = () => {
                     <Bar 
                       dataKey="growth" 
                       name="Growth %" 
-                      fill="#18453B"
-                      // Color bars based on growth value
-                      // Positive growth: green, Negative growth: red
-                      fill={(data) => data.growth >= 0 ? "#18453B" : "#D32F2F"}
+                      fill={(data) => (data.growth >= 0 ? "#18453B" : "#D32F2F")}
                     />
                   </BarChart>
                 </ResponsiveContainer>
