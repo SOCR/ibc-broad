@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
@@ -49,7 +48,9 @@ const useProcessedData = () => {
           year: currentYear.year,
           growth: parseFloat(growth.toFixed(2)),
           prevYear: prevYear.year,
-          yearLabel: `${country} ${currentYear.year}` // Fix: Add country name to make label unique
+          yearLabel: `${country} ${currentYear.year}`, // Fix: Add country name to make label unique
+          // Add color property directly to the data
+          color: growth >= 0 ? "#18453B" : "#D32F2F"
         });
       }
     });
@@ -297,8 +298,13 @@ const EconomicIndicators: React.FC = () => {
                     <Bar 
                       dataKey="growth" 
                       name="Growth %" 
-                      fill={(data) => (data.growth >= 0 ? "#18453B" : "#D32F2F")}
-                    />
+                      fill="#18453B"  // Default fill color
+                    >
+                      {/* Use Cell components to color individual bars */}
+                      {gdpGrowthData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               </ChartContainer>
