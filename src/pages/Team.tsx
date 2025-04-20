@@ -4,56 +4,56 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ibcTeamMembers } from "@/data/marketData";
 import { Users } from "lucide-react";
 
+// Team member card remains unchanged
 const TeamMemberCard: React.FC<{
   name: string;
-  title: string;
-  bio: string;
-  image: string;
+  title?: string;
+  bio?: string;
+  image?: string;
 }> = ({ name, title, bio, image }) => {
   const initials = name.split(' ').map(n => n[0]).join('');
-  
   return (
     <Card className="h-full">
       <CardHeader className="pb-2">
         <div className="flex items-start gap-4">
           <Avatar className="h-16 w-16 border-2 border-msu-green">
-            <AvatarImage src={image} alt={name} />
+            {image ? <AvatarImage src={image} alt={name} /> : null}
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
           <div>
             <CardTitle className="text-xl">{name}</CardTitle>
-            <CardDescription className="text-sm">{title}</CardDescription>
+            {title && <CardDescription className="text-sm">{title}</CardDescription>}
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-muted-foreground">{bio}</p>
+        {bio && <p className="text-muted-foreground">{bio}</p>}
       </CardContent>
     </Card>
   );
 };
 
-// --- New: List of student researchers (add/update as needed) ---
+// --- New: Accurate List of Student Researchers ---
 const studentResearchers = [
-  {
-    name: "Albert E. Williams",
-    title: "Student Researcher",
-    bio: "Specializes in global marketing analytics and supports IBC research initiatives.",
-    image: "/lovable-uploads/placeholder.svg" // replace with actual photo if available
-  },
-  {
-    name: "Amelia R. Smith",
-    title: "Student Researcher",
-    bio: "Focuses on international business research and community engagement.",
-    image: "/lovable-uploads/placeholder.svg"
-  },
-  {
-    name: "Landon Lee",
-    title: "Student Researcher",
-    bio: "Assists with the globalEDGE website and benchmarking data collection.",
-    image: "/lovable-uploads/placeholder.svg"
-  }
-  // Add more students as needed
+  "Andrea Galvan",
+  "Annie Sukosky",
+  "Ari Shaffar",
+  "Cameron Levis",
+  "Clare Hampel",
+  "Daisy Kelly",
+  "Dipika Rao",
+  "Harris Mcaree",
+  "Kaleb Davis",
+  "Mara Bartlett",
+  "Micheal Barron",
+  "Nina Miller",
+  "Paris Carter",
+  "Radina Dinov",
+  "Sean Fleming",
+  "Seth Kunio",
+  "Sterling Solek",
+  "Valerie Mcnamara",
+  "Yagumo Morikawa"
 ];
 
 const Team: React.FC = () => {
@@ -82,15 +82,15 @@ const Team: React.FC = () => {
 
       {/* Student Researchers */}
       <div>
-        <h2 className="mt-8 mb-2 text-xl font-semibold text-msu-green">Student Researchers</h2>
+        <h2 className="mt-8 mb-2 text-xl font-semibold text-msu-green">IBC Student Researchers</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {studentResearchers.map((member) => (
+          {studentResearchers.map((name) => (
             <TeamMemberCard 
-              key={member.name}
-              name={member.name}
-              title={member.title}
-              bio={member.bio}
-              image={member.image}
+              key={name}
+              name={name}
+              title="Student Researcher"
+              bio={undefined}
+              image={undefined}
             />
           ))}
         </div>
