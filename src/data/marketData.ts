@@ -62,7 +62,32 @@ export const ibcTeamMembers = [
     title: "Outreach Director",
     bio: "Dr. Ahmet Kirca serves as the Outreach Director for the IBC. He helps develop and implement programs that connect the business college with international partners and opportunities.",
     image: "/placeholder.svg"
+  },
+  {
+    name: "Erkan Kocas",
+    title: "Research Director",
+    bio: "Dr. Erkan Kocas is the Research Director at the International Business Center. He leads research initiatives and collaborates on various international business projects.",
+    image: "/placeholder.svg"
+  },
+  {
+    name: "Ronda Bunnell",
+    title: "Finance and Operations Manager",
+    bio: "Ronda Bunnell serves as the Finance and Operations Manager for IBC, managing financial operations and administrative processes for the center.",
+    image: "/placeholder.svg"
+  },
+  {
+    name: "Cindy Majeske",
+    title: "Project Coordinator",
+    bio: "Cindy Majeske is the Project Coordinator at IBC, supporting various international business initiatives and coordinating project activities.",
+    image: "/placeholder.svg"
   }
+];
+
+// Add student researchers section
+export const studentResearchers = [
+  { name: "Matt Schomisch" },
+  { name: "Shravya Sharon Paul" },
+  { name: "Joshua Hammond" }
 ];
 
 // Updated economic indicators with chronological order and non-repeating years

@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import { exchangeRateData, forecastMethods } from "@/data/marketData";
 import { dateRanges } from "@/data/constants";
@@ -118,10 +117,10 @@ const ExchangeRates: React.FC = () => {
     }
   }, [exchangeRateData, selectedDateRange, enableForecast, forecastMethod, forecastYears]);
   
-  // Get the latest and previous data for the currency cards
-  const latestData = exchangeRateData[exchangeRateData.length - 1] || {};
-  const previousData = exchangeRateData[exchangeRateData.length - 2] || {};
-  const lastActualDate = latestData?.date || "";
+  // Update this section to handle the empty object case properly
+  const latestData = exchangeRateData.length > 0 ? exchangeRateData[exchangeRateData.length - 1] : { date: '' };
+  const previousData = exchangeRateData.length > 1 ? exchangeRateData[exchangeRateData.length - 2] : { date: '' };
+  const lastActualDate = latestData.date || "";
 
   return (
     <div className="space-y-6">
