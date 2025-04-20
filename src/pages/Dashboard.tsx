@@ -17,15 +17,16 @@ import { ibexOverTimeData, ibexKnowledgeData, stateActivity } from "@/data/ibexD
 import { FileText } from "lucide-react";
 import { DashboardStats } from "@/components/dashboard/DashboardStats";
 import { ChartCard } from "@/components/dashboard/ChartCard";
+import { Tooltip as ShadcnTooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
-// Mock stock data
-const stockData = [
-  { name: "Jan", SPY: 380, EAFE: 350, EM: 320 },
-  { name: "Feb", SPY: 400, EAFE: 360, EM: 310 },
-  { name: "Mar", SPY: 410, EAFE: 365, EM: 315 },
-  { name: "Apr", SPY: 405, EAFE: 370, EM: 325 },
-  { name: "May", SPY: 420, EAFE: 375, EM: 330 },
-  { name: "Jun", SPY: 430, EAFE: 380, EM: 335 },
+// Annualized Market Data (years not months)
+const annualStockData = [
+  { year: 2018, SPY: 270, EAFE: 220, EM: 180 },
+  { year: 2019, SPY: 290, EAFE: 250, EM: 200 },
+  { year: 2020, SPY: 320, EAFE: 260, EM: 215 },
+  { year: 2021, SPY: 400, EAFE: 300, EM: 240 },
+  { year: 2022, SPY: 390, EAFE: 310, EM: 230 },
+  { year: 2023, SPY: 430, EAFE: 340, EM: 265 }
 ];
 
 // Mock economic data
@@ -44,12 +45,66 @@ const stateDistributionData = [
   { name: "Less Active", value: 13 }
 ];
 
+const statExplanations = {
+  score: "The Current IBEX Score reflects the latest measurement of international business activity and engagement benchmarks for community colleges across the US. The higher the score, the more active and comprehensive the programs.",
+  rankings: "State Rankings display the distribution of states by their activity level in international business education. 'Highly Active' denotes top engagement, 'Active' for moderate, and 'Less Active' for limited participation.",
+  course: "The Top International Course spotlights the most commonly offered international business course across US community colleges and the percentage of colleges including it in their curriculum."
+};
+
 const Dashboard: React.FC = () => {
   const latestIbexData = ibexOverTimeData[ibexOverTimeData.length - 1];
   
   return (
     <div className="space-y-6">
-      <DashboardStats latestIbexData={latestIbexData} />
+      <TooltipProvider>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* IBEX Score StatCard with Tooltip */}
+          <ShadcnTooltip>
+            <TooltipTrigger asChild>
+              <div>
+                <DashboardStats 
+                  latestIbexData={latestIbexData} 
+                  // Only render IBEX Score as first card so we can wrap it for tooltip
+                  renderFirstCard
+                />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-xs">
+              <span>{statExplanations.score}</span>
+            </TooltipContent>
+          </ShadcnTooltip>
+
+          {/* State Rankings StatCard with Tooltip */}
+          <ShadcnTooltip>
+            <TooltipTrigger asChild>
+              <div>
+                <DashboardStats 
+                  latestIbexData={latestIbexData} 
+                  renderSecondCard
+                />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-xs">
+              <span>{statExplanations.rankings}</span>
+            </TooltipContent>
+          </ShadcnTooltip>
+
+          {/* Top International Course StatCard with Tooltip */}
+          <ShadcnTooltip>
+            <TooltipTrigger asChild>
+              <div>
+                <DashboardStats 
+                  latestIbexData={latestIbexData} 
+                  renderThirdCard
+                />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-xs">
+              <span>{statExplanations.course}</span>
+            </TooltipContent>
+          </ShadcnTooltip>
+        </div>
+      </TooltipProvider>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <ChartCard title="IBEX Scores Over Time">
@@ -91,14 +146,15 @@ const Dashboard: React.FC = () => {
         </ChartCard>
       </div>
 
+      {/* Use annual market data for Market Performance! */}
       <ChartCard title="Market Performance">
         <LineChart
-          data={stockData}
+          data={annualStockData}
           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis domain={[300, 450]} />
+          <XAxis dataKey="year" />
+          <YAxis domain={['auto', 'auto']} />
           <Tooltip />
           <Legend />
           <Line type="monotone" dataKey="SPY" stroke="#18453B" strokeWidth={2} />

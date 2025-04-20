@@ -22,37 +22,25 @@ import { TrendingUp, TrendingDown, BarChart2 } from "lucide-react";
 
 const COLORS = ["#18453B", "#7A9B76", "#A2AAAD", "#FF6B35", "#4361EE"];
 
-// Process data for line charts - memoized for performance
 const useProcessedData = () => {
   return useMemo(() => {
     // Get unique countries and years
     const countries = [...new Set(economicIndicators.map(item => item.country))];
     const years = [...new Set(economicIndicators.map(item => item.year))].sort((a, b) => a - b);
     
-    // Process GDP growth data - fix: create properly structured data for bar chart
-    const gdpGrowthData = [];
-    
-    // Calculate growth rates for each country across years
-    countries.forEach(country => {
-      const countryData = economicIndicators
-        .filter(item => item.country === country)
-        .sort((a, b) => a.year - b.year);
-      
-      for (let i = 1; i < countryData.length; i++) {
-        const prevYear = countryData[i-1];
-        const currentYear = countryData[i];
-        
-        const growth = ((currentYear.gdp - prevYear.gdp) / prevYear.gdp) * 100;
-        gdpGrowthData.push({
-          country,
-          year: currentYear.year,
-          growth: parseFloat(growth.toFixed(2)),
-          prevYear: prevYear.year,
-          yearLabel: `${country} ${currentYear.year}`, // Fix: Add country name to make label unique
-          // Add color property directly to the data
-          color: growth >= 0 ? "#18453B" : "#D32F2F"
-        });
-      }
+    // GDP Growth: produce data as array of {year, ...countries}
+    const gdpGrowthPerYear = years.slice(1).map(year => {
+      const group: any = { year };
+      countries.forEach(country => {
+        const prevData = economicIndicators.find(item => item.country === country && item.year === year - 1);
+        const curData = economicIndicators.find(item => item.country === country && item.year === year);
+        if (prevData && curData) {
+          group[country] = parseFloat((((curData.gdp - prevData.gdp) / prevData.gdp) * 100).toFixed(2));
+        } else {
+          group[country] = null;
+        }
+      });
+      return group;
     });
     
     // Process line chart data
@@ -77,7 +65,7 @@ const useProcessedData = () => {
     return {
       countries,
       years,
-      gdpGrowthData,
+      gdpGrowthPerYear,
       gdpLineData: processDataForMetric('gdp'),
       inflationLineData: processDataForMetric('inflation'),
       unemploymentLineData: processDataForMetric('unemployment')
@@ -86,8 +74,10 @@ const useProcessedData = () => {
 };
 
 const EconomicIndicators: React.FC = () => {
-  const { countries, years, gdpGrowthData, gdpLineData, inflationLineData, unemploymentLineData } = useProcessedData();
-  const [selectedYear, setSelectedYear] = useState<number>(Math.max(...years));
+  const { countries, years, gdpGrowthPerYear, gdpLineData, inflationLineData, unemploymentLineData } = useProcessedData();
+  // Set default dropdown to "3 years"
+  const defaultYear = years[years.length - 1] || 2023;
+  const [selectedYear, setSelectedYear] = useState<number>(defaultYear);
   
   // Filter data for selected year - memoized to avoid recalculations
   const yearData = useMemo(() => {
@@ -277,34 +267,31 @@ const EconomicIndicators: React.FC = () => {
             <CardContent className="h-80">
               <ChartContainer config={{}} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart 
-                    data={gdpGrowthData} 
+                  <BarChart
+                    data={gdpGrowthPerYear}
                     margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis 
-                      dataKey="yearLabel"
-                      tickFormatter={(value) => value.split(' ')[1]} // Only show year in tick labels
+                      dataKey="year"
+                      tick={{
+                        fontSize: 12
+                      }}
                     />
                     <YAxis />
                     <Tooltip 
-                      formatter={(value) => [`${value}%`, "Growth"]}
-                      labelFormatter={(label) => {
-                        const parts = label.split(' ');
-                        return `${parts[0]} (${parts[1]})`;
-                      }}
+                      formatter={(value, country) => [`${value}%`, country]}
+                      labelFormatter={label => `Year: ${label}`}
                     />
                     <Legend />
-                    <Bar 
-                      dataKey="growth" 
-                      name="Growth %" 
-                      fill="#18453B"  // Default fill color
-                    >
-                      {/* Use Cell components to color individual bars */}
-                      {gdpGrowthData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Bar>
+                    {countries.map((country, idx) => (
+                      <Bar
+                        key={country}
+                        dataKey={country}
+                        name={country}
+                        fill={COLORS[idx % COLORS.length]}
+                      />
+                    ))}
                   </BarChart>
                 </ResponsiveContainer>
               </ChartContainer>
