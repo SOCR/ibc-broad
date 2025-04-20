@@ -3,6 +3,7 @@ import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OverviewTab } from "@/components/market/OverviewTab";
 import { EconomicTab } from "@/components/market/EconomicTab";
+import { TrendsTab } from "@/components/market/TrendsTab";
 
 const MarketData: React.FC = () => {
   return (
@@ -25,7 +26,7 @@ const MarketData: React.FC = () => {
         </TabsContent>
         
         <TabsContent value="trends" className="space-y-6 mt-6">
-          <EconomicTab />
+          <TrendsTab />
         </TabsContent>
       </Tabs>
     </div>

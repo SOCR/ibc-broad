@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import {
   BarChart,
   Bar,
@@ -23,110 +23,81 @@ import { TrendingUp, TrendingDown, BarChart2 } from "lucide-react";
 
 const COLORS = ["#18453B", "#7A9B76", "#A2AAAD", "#FF6B35", "#4361EE"];
 
-// Process GDP Growth data based on economic indicators - fixed to avoid repeating years
-const getGdpGrowthData = () => {
-  // Group by country and sort by year
-  const countries = [...new Set(economicIndicators.map(item => item.country))];
-  
-  const growthData = [];
-  
-  countries.forEach(country => {
-    const countryData = economicIndicators
-      .filter(item => item.country === country)
-      .sort((a, b) => a.year - b.year);
+// Process data for line charts - memoized for performance
+const useProcessedData = () => {
+  return useMemo(() => {
+    // Get unique countries and years
+    const countries = [...new Set(economicIndicators.map(item => item.country))];
+    const years = [...new Set(economicIndicators.map(item => item.year))].sort((a, b) => a - b);
     
-    // Calculate growth rates
-    for (let i = 1; i < countryData.length; i++) {
-      const prevYear = countryData[i-1];
-      const currentYear = countryData[i];
+    // Process GDP growth data
+    const gdpGrowthData = [];
+    countries.forEach(country => {
+      const countryData = economicIndicators
+        .filter(item => item.country === country)
+        .sort((a, b) => a.year - b.year);
       
-      const growth = ((currentYear.gdp - prevYear.gdp) / prevYear.gdp) * 100;
-      growthData.push({
-        country,
-        year: currentYear.year,
-        growth: parseFloat(growth.toFixed(2)),
-        prevYear: prevYear.year,
-        // Create a unique identifier for x-axis
-        periodLabel: `${country}-${currentYear.year}`
+      for (let i = 1; i < countryData.length; i++) {
+        const prevYear = countryData[i-1];
+        const currentYear = countryData[i];
+        
+        const growth = ((currentYear.gdp - prevYear.gdp) / prevYear.gdp) * 100;
+        gdpGrowthData.push({
+          country,
+          year: currentYear.year,
+          growth: parseFloat(growth.toFixed(2)),
+          prevYear: prevYear.year,
+          yearLabel: currentYear.year.toString()
+        });
+      }
+    });
+    
+    // Process line chart data
+    const processDataForMetric = (metric) => {
+      return countries.map(country => {
+        const countryData = economicIndicators
+          .filter(item => item.country === country)
+          .sort((a, b) => a.year - b.year)
+          .map(item => ({
+            year: item.year,
+            value: item[metric],
+            country: item.country
+          }));
+          
+        return {
+          name: country,
+          data: countryData
+        };
       });
-    }
-  });
-  
-  return growthData;
-};
-
-// Process data to ensure proper grouping by country for line charts
-const processDataForLineCharts = (metric) => {
-  const countries = [...new Set(economicIndicators.map(item => item.country))];
-  
-  // Create country-specific datasets for each country
-  const result = countries.map(country => {
-    const countryData = economicIndicators
-      .filter(item => item.country === country)
-      .sort((a, b) => a.year - b.year)
-      .map(item => ({
-        year: item.year,
-        value: item[metric],
-        country: item.country
-      }));
-      
-    return {
-      name: country,
-      data: countryData
     };
-  });
-  
-  return result;
+    
+    return {
+      countries,
+      years,
+      gdpGrowthData,
+      gdpLineData: processDataForMetric('gdp'),
+      inflationLineData: processDataForMetric('inflation'),
+      unemploymentLineData: processDataForMetric('unemployment')
+    };
+  }, []);
 };
-
-// Type for chart data
-interface CountryData {
-  year: number;
-  value: number;
-  country: string;
-}
-
-interface ProcessedLineData {
-  name: string;
-  data: CountryData[];
-}
 
 const EconomicIndicators: React.FC = () => {
-  const years = [...new Set(economicIndicators.map(item => item.year))].sort((a, b) => a - b);
+  const { countries, years, gdpGrowthData, gdpLineData, inflationLineData, unemploymentLineData } = useProcessedData();
   const [selectedYear, setSelectedYear] = useState<number>(Math.max(...years));
   
-  const gdpGrowthData = getGdpGrowthData();
+  // Filter data for selected year - memoized to avoid recalculations
+  const yearData = useMemo(() => {
+    return economicIndicators.filter(item => item.year === selectedYear);
+  }, [selectedYear]);
   
-  // Filter data for selected year
-  const yearData = economicIndicators.filter(item => item.year === selectedYear);
-  
-  // Prepare data for pie charts
-  const gdpData = yearData.map(item => ({
-    name: item.country,
-    value: item.gdp
-  }));
-  
-  // Process data for line charts
-  const gdpLineData = useMemo(() => processDataForLineCharts('gdp'), []);
-  const inflationLineData = useMemo(() => processDataForLineCharts('inflation'), []);
-  const unemploymentLineData = useMemo(() => processDataForLineCharts('unemployment'), []);
-
-  // Group GDP growth data by country and year for better visualization
-  const groupedGdpGrowthData = useMemo(() => {
-    const dataByCountry = {};
-    countries.forEach(country => {
-      dataByCountry[country] = [];
-    });
-
-    gdpGrowthData.forEach(item => {
-      dataByCountry[item.country].push(item);
-    });
-
-    return dataByCountry;
-  }, []);
-  
-  // Get unique countries for data display
-  const countries = [...new Set(economicIndicators.map(item => item.country))];
+  // Prepare data for pie chart - memoized to avoid recalculations
+  const gdpData = useMemo(() => {
+    return yearData.map(item => ({
+      name: item.country,
+      value: item.gdp
+    }));
+  }, [yearData]);
   
   return (
     <div className="space-y-6">
@@ -148,7 +119,9 @@ const EconomicIndicators: React.FC = () => {
         ))}
       </div>
       
+      {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* GDP Card */}
         <Card>
           <CardHeader className="pb-2">
             <div className="flex justify-between items-center">
@@ -177,7 +150,7 @@ const EconomicIndicators: React.FC = () => {
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
-                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Tooltip formatter={(value) => [`$${value}T`, "GDP"]} />
                   </PieChart>
                 </ResponsiveContainer>
               </ChartContainer>
@@ -188,6 +161,7 @@ const EconomicIndicators: React.FC = () => {
           </CardContent>
         </Card>
         
+        {/* Inflation Card */}
         <Card>
           <CardHeader className="pb-2">
             <div className="flex justify-between items-center">
@@ -216,6 +190,7 @@ const EconomicIndicators: React.FC = () => {
           </CardContent>
         </Card>
         
+        {/* Unemployment Card */}
         <Card>
           <CardHeader className="pb-2">
             <div className="flex justify-between items-center">
@@ -252,6 +227,7 @@ const EconomicIndicators: React.FC = () => {
           <TabsTrigger value="unemployment">Unemployment Trends</TabsTrigger>
         </TabsList>
         
+        {/* GDP Trends Tab */}
         <TabsContent value="gdp" className="space-y-6 mt-6">
           <Card>
             <CardHeader>
@@ -260,9 +236,7 @@ const EconomicIndicators: React.FC = () => {
             <CardContent className="h-80">
               <ChartContainer config={{}} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                  >
+                  <LineChart margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis 
                       dataKey="year"
@@ -271,11 +245,11 @@ const EconomicIndicators: React.FC = () => {
                       allowDuplicatedCategory={false}
                     />
                     <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Tooltip formatter={(value) => [`$${value}T`, "GDP"]} />
                     <Legend />
-                    {gdpLineData.map((country: ProcessedLineData, index: number) => (
+                    {gdpLineData.map((country, index) => (
                       <Line 
-                        key={`${country.name}-${index}`}
+                        key={`${country.name}-gdp`}
                         name={country.name}
                         data={country.data}
                         type="monotone" 
@@ -300,43 +274,27 @@ const EconomicIndicators: React.FC = () => {
             <CardContent className="h-80">
               <ChartContainer config={{}} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={gdpGrowthData}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                  >
+                  <BarChart margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis 
-                      dataKey="periodLabel"
-                      tickFormatter={(value) => {
-                        // Display just year and country for better readability
-                        const [country, year] = value.split('-');
-                        return `${country} ${year}`;
-                      }}
-                      height={60}
-                      angle={-45}
-                      textAnchor="end"
+                      dataKey="yearLabel"
+                      tickFormatter={(value) => value}
                     />
                     <YAxis />
-                    <ChartTooltip 
-                      content={(props) => {
-                        if (!props.active || !props.payload) return null;
-                        const data = props.payload[0]?.payload;
-                        if (!data) return null;
-                        return (
-                          <div className="bg-white p-2 border rounded shadow">
-                            <p>{`Country: ${data.country}`}</p>
-                            <p>{`Year: ${data.year}`}</p>
-                            <p>{`Growth: ${data.growth}%`}</p>
-                            <p>{`Compared to: ${data.prevYear}`}</p>
-                          </div>
-                        );
+                    <Tooltip 
+                      formatter={(value) => [`${value}%`, "Growth"]}
+                      labelFormatter={(label, payload) => {
+                        if (payload && payload.length > 0) {
+                          return `${payload[0].payload.country} (${payload[0].payload.year})`;
+                        }
+                        return label;
                       }}
                     />
                     <Legend />
                     <Bar 
                       dataKey="growth" 
-                      name="Growth %"
-                      fill="#18453B"
+                      name="Growth %" 
+                      fill="#18453B" 
                     />
                   </BarChart>
                 </ResponsiveContainer>
@@ -345,6 +303,7 @@ const EconomicIndicators: React.FC = () => {
           </Card>
         </TabsContent>
         
+        {/* Inflation Trends Tab */}
         <TabsContent value="inflation" className="space-y-6 mt-6">
           <Card>
             <CardHeader>
@@ -353,9 +312,7 @@ const EconomicIndicators: React.FC = () => {
             <CardContent className="h-80">
               <ChartContainer config={{}} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                  >
+                  <LineChart margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis 
                       dataKey="year"
@@ -364,11 +321,11 @@ const EconomicIndicators: React.FC = () => {
                       allowDuplicatedCategory={false}
                     />
                     <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Tooltip formatter={(value) => [`${value}%`, "Inflation"]} />
                     <Legend />
-                    {inflationLineData.map((country: ProcessedLineData, index: number) => (
+                    {inflationLineData.map((country, index) => (
                       <Line 
-                        key={`${country.name}-${index}`}
+                        key={`${country.name}-inflation`}
                         name={country.name}
                         data={country.data}
                         type="monotone" 
@@ -387,6 +344,7 @@ const EconomicIndicators: React.FC = () => {
           </Card>
         </TabsContent>
         
+        {/* Unemployment Trends Tab */}
         <TabsContent value="unemployment" className="space-y-6 mt-6">
           <Card>
             <CardHeader>
@@ -395,9 +353,7 @@ const EconomicIndicators: React.FC = () => {
             <CardContent className="h-80">
               <ChartContainer config={{}} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                  >
+                  <LineChart margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis 
                       dataKey="year"
@@ -406,11 +362,11 @@ const EconomicIndicators: React.FC = () => {
                       allowDuplicatedCategory={false}
                     />
                     <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Tooltip formatter={(value) => [`${value}%`, "Unemployment"]} />
                     <Legend />
-                    {unemploymentLineData.map((country: ProcessedLineData, index: number) => (
+                    {unemploymentLineData.map((country, index) => (
                       <Line 
-                        key={`${country.name}-${index}`}
+                        key={`${country.name}-unemployment`}
                         name={country.name}
                         data={country.data}
                         type="monotone" 
