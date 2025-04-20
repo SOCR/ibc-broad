@@ -13,8 +13,9 @@ export function generateFinancialScenarios(profile: FinancialProfile): Financial
 }
 
 function generateConservativeScenario(profile: FinancialProfile): FinancialScenario {
-  const investmentReturn = 0.05; // 5% annual return
-  const inflationRate = 0.03; // 3% inflation rate
+  // More realistic conservative return rates
+  const investmentReturn = 0.04; // 4% annual return (reduced from 5%)
+  const inflationRate = 0.025; // 2.5% inflation rate (reduced from 3%)
   const taxRate = 0.15; // 15% effective tax rate
   const retirementSavingRate = profile.goals.retirement.savingRate * 1.05; // Slightly increased savings
   const additionalIncome = 0; // No additional income sources
@@ -42,12 +43,13 @@ function generateConservativeScenario(profile: FinancialProfile): FinancialScena
 }
 
 function generateBalancedScenario(profile: FinancialProfile): FinancialScenario {
-  const investmentReturn = 0.07; // 7% annual return
+  // More realistic balanced return rates
+  const investmentReturn = 0.06; // 6% annual return (reduced from 7%)
   const inflationRate = 0.025; // 2.5% inflation rate
   const taxRate = 0.18; // 18% effective tax rate
   const retirementSavingRate = profile.goals.retirement.savingRate * 1.15; // 15% increased savings
-  const additionalIncome = profile.income * 0.05; // 5% additional income sources (side gigs, etc.)
-  const expenseReduction = profile.monthlyExpenses * 0.1; // 10% reduction in expenses
+  const additionalIncome = profile.income * 0.03; // 3% additional income sources (reduced from 5%)
+  const expenseReduction = profile.monthlyExpenses * 0.08; // 8% reduction in expenses (reduced from 10%)
   
   return {
     id: "balanced",
@@ -71,12 +73,13 @@ function generateBalancedScenario(profile: FinancialProfile): FinancialScenario 
 }
 
 function generateAggressiveScenario(profile: FinancialProfile): FinancialScenario {
-  const investmentReturn = 0.09; // 9% annual return
+  // More realistic aggressive return rates
+  const investmentReturn = 0.08; // 8% annual return (reduced from 9%)
   const inflationRate = 0.03; // 3% inflation rate
   const taxRate = 0.2; // 20% effective tax rate
   const retirementSavingRate = profile.goals.retirement.savingRate * 1.25; // 25% increased savings
-  const additionalIncome = profile.income * 0.1; // 10% additional income sources
-  const expenseReduction = profile.monthlyExpenses * 0.15; // 15% reduction in expenses
+  const additionalIncome = profile.income * 0.07; // 7% additional income sources (reduced from 10%)
+  const expenseReduction = profile.monthlyExpenses * 0.12; // 12% reduction in expenses (reduced from 15%)
   
   return {
     id: "aggressive",
@@ -163,13 +166,13 @@ function calculateResults(profile: FinancialProfile, params: CalculationParams) 
                    profile.debts.carLoans + profile.debts.creditCards + profile.debts.other;
   let netWorth = currentAssets + profile.assets.realEstate + profile.assets.other - totalDebts;
   
-  // Annual savings (including retirement savings rate and expense reduction)
+  // More realistic annual savings calculation
   let currentIncome = profile.income + params.additionalIncome;
   let monthlyExpensesAfterReduction = profile.monthlyExpenses - params.expenseReduction;
   let annualExpenses = monthlyExpensesAfterReduction * 12;
   let annualSavings = (currentIncome * (1 - params.taxRate)) - annualExpenses;
   
-  // Project for each year until retirement
+  // Project for each year until retirement with more realistic growth rates
   for (let year = 0; year <= yearsUntilRetirement; year++) {
     // Record the current year's values
     netWorthOverTime.push({ year: profile.age + year, value: netWorth });
@@ -177,12 +180,13 @@ function calculateResults(profile: FinancialProfile, params: CalculationParams) 
     incomeOverTime.push({ year: profile.age + year, value: currentIncome });
     expensesOverTime.push({ year: profile.age + year, value: annualExpenses });
     
-    // Update for next year
+    // More conservative investment returns that compound annually
     currentAssets = currentAssets * (1 + params.investmentReturn) + annualSavings;
     
-    // Adjust for inflation and modest income growth
+    // Adjust for inflation and modest income growth (more realistic)
     const inflationFactor = Math.pow(1 + params.inflationRate, year);
-    const incomeGrowthFactor = 1 + (0.02 + params.inflationRate); // 2% real income growth plus inflation
+    // More conservative income growth: inflation + small real growth
+    const incomeGrowthFactor = 1 + (0.01 + params.inflationRate); // 1% real income growth plus inflation
     
     // Update income and expenses for next year
     currentIncome = profile.income * Math.pow(incomeGrowthFactor, year + 1) + params.additionalIncome;
@@ -194,16 +198,16 @@ function calculateResults(profile: FinancialProfile, params: CalculationParams) 
     const remainingDebtRatio = Math.max(0, 1 - year / (yearsUntilRetirement * 0.8));
     const currentDebts = totalDebts * remainingDebtRatio;
     
-    // Update net worth with appreciation for real estate
-    const realEstateValue = profile.assets.realEstate * Math.pow(1 + 0.04, year); // 4% annual real estate appreciation
+    // More conservative real estate appreciation
+    const realEstateValue = profile.assets.realEstate * Math.pow(1 + 0.03, year); // 3% annual real estate appreciation
     netWorth = currentAssets + realEstateValue + (profile.assets.other * inflationFactor) - currentDebts;
   }
   
-  // Calculate retirement income (assuming 4% withdrawal rate)
+  // Calculate retirement income (using a more conservative 3.5% withdrawal rate instead of 4%)
   const retirementBalance = currentAssets;
-  const retirementIncome = retirementBalance * 0.04;
+  const retirementIncome = retirementBalance * 0.035 / 12; // Monthly retirement income
   
-  // Project retirement years
+  // Project retirement years with more conservative assumptions
   const retirementYears = profile.lifeExpectancy - profile.retirementAge;
   let retirementNetWorthOverTime: Array<{year: number, value: number}> = [];
   let retirementAssetsOverTime: Array<{year: number, value: number}> = [];
@@ -220,11 +224,11 @@ function calculateResults(profile: FinancialProfile, params: CalculationParams) 
     const inflationFactor = Math.pow(1 + params.inflationRate, year);
     const annualWithdrawal = retirementIncome * 12 * inflationFactor;
     
-    // Update retirement assets
-    retirementAssets = Math.max(0, (retirementAssets - annualWithdrawal) * (1 + params.investmentReturn * 0.8)); // Lower returns in retirement (more conservative)
+    // More conservative returns during retirement (80% of pre-retirement returns)
+    retirementAssets = Math.max(0, (retirementAssets - annualWithdrawal) * (1 + params.investmentReturn * 0.7));
     
-    // Update real estate value
-    const realEstateValue = profile.assets.realEstate * Math.pow(1 + 0.03, yearsUntilRetirement + year); // Slower real estate growth in retirement
+    // Update real estate value with more conservative growth
+    const realEstateValue = profile.assets.realEstate * Math.pow(1 + 0.02, yearsUntilRetirement + year); // 2% annual real estate growth in retirement
     
     // Update net worth
     currentRetirementNetWorth = retirementAssets + realEstateValue;
@@ -280,7 +284,7 @@ function calculateResults(profile: FinancialProfile, params: CalculationParams) 
     collegeBalance = currentEducationSavings;
     educationFundingGap = Math.max(0, totalEducationCost - collegeBalance);
   }
-  
+
   return {
     retirementBalance,
     retirementIncome,

@@ -18,7 +18,7 @@ const CaseStudies = () => {
       id: 2,
       title: "Global Supply Chain Disruption",
       description: "Analysis of global supply chain disruptions during economic uncertainties",
-      pdfUrl: "#",
+      pdfUrl: "https://www.researchgate.net/publication/363541203_Global_Supply_Chain_Disruptions_in_the_Wake_of_the_COVID-19_Pandemic",
       date: "2021"
     },
     {
