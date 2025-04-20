@@ -17,7 +17,7 @@ export const ChartCard: React.FC<ChartCardProps> = ({ title, titleExtra, childre
           {titleExtra}
         </div>
       </CardHeader>
-      <CardContent className="pt-2">
+      <CardContent className="pt-2 h-[300px]">
         {children}
       </CardContent>
     </Card>

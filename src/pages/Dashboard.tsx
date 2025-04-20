@@ -1,4 +1,3 @@
-
 import React from "react";
 import { 
   BarChart, 
@@ -12,7 +11,8 @@ import {
   Line,
   PieChart,
   Pie,
-  Cell
+  Cell,
+  ResponsiveContainer
 } from "recharts";
 import { ibexOverTimeData, ibexKnowledgeData, stateActivity } from "@/data/ibexData";
 import { FileText } from "lucide-react";
@@ -83,7 +83,6 @@ const DASHBOARD_SOURCES = {
 const Dashboard: React.FC = () => {
   const latestIbexData = ibexOverTimeData[ibexOverTimeData.length - 1];
   
-  // Fixed type errors: we need to provide title as a string prop and use the React elements inside the component
   return (
     <div className="space-y-6">
       <TooltipProvider>
@@ -158,21 +157,23 @@ const Dashboard: React.FC = () => {
                     </div>
                   }
         >
-          <LineChart
-            data={ibexOverTimeData}
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="year" />
-            <YAxis domain={[0, 1]} />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="midwest" stroke="#8884d8" />
-            <Line type="monotone" dataKey="northeast" stroke="#82ca9d" />
-            <Line type="monotone" dataKey="south" stroke="#ffc658" />
-            <Line type="monotone" dataKey="west" stroke="#ff7300" />
-            <Line type="monotone" dataKey="overall" stroke="#18453B" strokeWidth={2} />
-          </LineChart>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={ibexOverTimeData}
+              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="year" />
+              <YAxis domain={[0, 1]} />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="midwest" stroke="#8884d8" />
+              <Line type="monotone" dataKey="northeast" stroke="#82ca9d" />
+              <Line type="monotone" dataKey="south" stroke="#ffc658" />
+              <Line type="monotone" dataKey="west" stroke="#ff7300" />
+              <Line type="monotone" dataKey="overall" stroke="#18453B" strokeWidth={2} />
+            </LineChart>
+          </ResponsiveContainer>
         </ChartCard>
 
         <ChartCard title="State Activity Distribution" 
@@ -196,23 +197,25 @@ const Dashboard: React.FC = () => {
                     </div>
                   }
         >
-          <PieChart>
-            <Pie
-              data={stateDistributionData}
-              cx="50%"
-              cy="50%"
-              labelLine={false}
-              outerRadius={80}
-              fill="#8884d8"
-              dataKey="value"
-              label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
-            >
-              <Cell key="cell-0" fill="#18453B" />
-              <Cell key="cell-1" fill="#7A9B76" />
-              <Cell key="cell-2" fill="#A2AAAD" />
-            </Pie>
-            <Tooltip />
-          </PieChart>
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={stateDistributionData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+                label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
+              >
+                <Cell key="cell-0" fill="#18453B" />
+                <Cell key="cell-1" fill="#7A9B76" />
+                <Cell key="cell-2" fill="#A2AAAD" />
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
         </ChartCard>
       </div>
 
@@ -228,28 +231,29 @@ const Dashboard: React.FC = () => {
                       <PopoverTrigger asChild>
                         <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
                           <Info size={16} className="text-muted-foreground" />
-                        </button>
-                      </PopoverTrigger>
-                      <PopoverContent side="top" className="text-xs max-w-xs">
-                        {DASHBOARD_SOURCES.market}
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                }
+                        </PopoverTrigger>
+                        <PopoverContent side="top" className="text-xs max-w-xs">
+                          {DASHBOARD_SOURCES.market}
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  }
       >
-        <LineChart
-          data={annualStockData}
-          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="year" />
-          <YAxis domain={['auto', 'auto']} />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="SPY" stroke="#18453B" strokeWidth={2} />
-          <Line type="monotone" dataKey="EAFE" stroke="#7A9B76" />
-          <Line type="monotone" dataKey="EM" stroke="#A2AAAD" />
-        </LineChart>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={annualStockData}
+            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="year" />
+            <YAxis domain={['auto', 'auto']} />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="SPY" stroke="#18453B" strokeWidth={2} />
+            <Line type="monotone" dataKey="EAFE" stroke="#7A9B76" />
+            <Line type="monotone" dataKey="EM" stroke="#A2AAAD" />
+          </LineChart>
+        </ResponsiveContainer>
       </ChartCard>
 
       <ChartCard title="Economic Indicators: Major Economies" 
@@ -264,28 +268,29 @@ const Dashboard: React.FC = () => {
                       <PopoverTrigger asChild>
                         <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
                           <Info size={16} className="text-muted-foreground" />
-                        </button>
-                      </PopoverTrigger>
-                      <PopoverContent side="top" className="text-xs max-w-xs">
-                        {DASHBOARD_SOURCES.economic}
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                }
+                        </PopoverTrigger>
+                        <PopoverContent side="top" className="text-xs max-w-xs">
+                          {DASHBOARD_SOURCES.economic}
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  }
       >
-        <BarChart
-          data={economicData}
-          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="gdpGrowth" name="GDP Growth %" fill="#18453B" />
-          <Bar dataKey="inflation" name="Inflation %" fill="#7A9B76" />
-          <Bar dataKey="unemployment" name="Unemployment %" fill="#A2AAAD" />
-        </BarChart>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={economicData}
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="gdpGrowth" name="GDP Growth %" fill="#18453B" />
+            <Bar dataKey="inflation" name="Inflation %" fill="#7A9B76" />
+            <Bar dataKey="unemployment" name="Unemployment %" fill="#A2AAAD" />
+          </BarChart>
+        </ResponsiveContainer>
       </ChartCard>
 
       <div className="mt-8 border-t pt-6">
