@@ -1,4 +1,3 @@
-
 export interface EconomicIndicator {
   country: string;
   year: number;
@@ -214,7 +213,22 @@ export const forecastMethods = [
   { id: 'exponential', name: 'Exponential Smoothing', description: 'Places more weight on recent observations.' }
 ];
 
+// Update stock exchange data to include year property and individual exchange properties
 export const stockExchangeData = [
+  { year: 1950, nyse: 100, nasdaq: 100, lse: 100, tse: 100, sse: 100, hkse: 100, euronext: 100, bse: 100, jsx: 100, asx: 100 },
+  { year: 1960, nyse: 145, nasdaq: 132, lse: 148, tse: 135, sse: 120, hkse: 125, euronext: 130, bse: 115, jsx: 110, asx: 128 },
+  { year: 1970, nyse: 235, nasdaq: 210, lse: 236, tse: 204, sse: 145, hkse: 156, euronext: 198, bse: 142, jsx: 131, asx: 167 },
+  { year: 1980, nyse: 487, nasdaq: 432, lse: 389, tse: 367, sse: 178, hkse: 245, euronext: 312, bse: 187, jsx: 154, asx: 232 },
+  { year: 1990, nyse: 876, nasdaq: 789, lse: 712, tse: 654, sse: 267, hkse: 456, euronext: 567, bse: 278, jsx: 234, asx: 398 },
+  { year: 2000, nyse: 1430, nasdaq: 1897, lse: 1032, tse: 967, sse: 456, hkse: 789, euronext: 876, bse: 432, jsx: 367, asx: 654 },
+  { year: 2010, nyse: 2134, nasdaq: 2345, lse: 1543, tse: 1342, sse: 987, hkse: 1234, euronext: 1345, bse: 765, jsx: 543, asx: 876 },
+  { year: 2015, nyse: 2678, nasdaq: 2987, lse: 1786, tse: 1567, sse: 1345, hkse: 1567, euronext: 1654, bse: 987, jsx: 654, asx: 1032 },
+  { year: 2020, nyse: 3000, nasdaq: 3200, lse: 1800, tse: 1650, sse: 1500, hkse: 1700, euronext: 1750, bse: 1100, jsx: 700, asx: 1200 },
+  { year: 2023, nyse: 3500, nasdaq: 3800, lse: 2000, tse: 1800, sse: 1600, hkse: 1900, euronext: 1950, bse: 1200, jsx: 850, asx: 1350 }
+];
+
+// Let's also keep a separate structure for the original stock exchange data
+export const stockExchangeDetails = [
   { exchange: 'NYSE', country: 'USA', marketCap: 27.69, volume: 1.46, companies: 2400, yearlyChange: 8.2 },
   { exchange: 'NASDAQ', country: 'USA', marketCap: 24.56, volume: 2.89, companies: 3300, yearlyChange: 12.8 },
   { exchange: 'Tokyo SE', country: 'Japan', marketCap: 6.17, volume: 0.55, companies: 3800, yearlyChange: 7.4 },

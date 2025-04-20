@@ -31,7 +31,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { exchangeRateData, economicIndicators, stockExchangeData, supplyChainData } from "@/data/marketData";
+import { exchangeRateData, economicIndicators, stockExchangeData, stockExchangeDetails, supplyChainData } from "@/data/marketData";
 
 const COLORS = ["#18453B", "#7A9B76", "#A2AAAD", "#1E88E5", "#D81B60", "#43A047"];
 
@@ -41,18 +41,20 @@ const Index = () => {
 
   // Prepare GDP data
   const gdpData = economicIndicators
-    .filter(item => item.year === 2023)
+    .filter(item => item.year === 2022) // Use 2022 since we don't have 2023 data
     .map(item => ({
       name: item.country,
       value: item.gdp
     }));
 
-  // Prepare stock exchange data for card
-  // Create a simple array for top exchanges since marketCap isn't in the data
+  // Prepare stock exchange data for card using the most recent data
+  const latestStockExchangeData = stockExchangeData[stockExchangeData.length - 1];
+  
+  // Create a simple array for top exchanges
   const topExchanges = [
-    { name: "New York Stock Exchange", value: stockExchangeData[stockExchangeData.length-1].nyse, marketCap: "30.1T" },
-    { name: "NASDAQ", value: stockExchangeData[stockExchangeData.length-1].nasdaq, marketCap: "24.5T" },
-    { name: "Shanghai Stock Exchange", value: stockExchangeData[stockExchangeData.length-1].sse, marketCap: "7.6T" }
+    { name: "New York Stock Exchange", value: latestStockExchangeData.nyse, marketCap: "30.1T" },
+    { name: "NASDAQ", value: latestStockExchangeData.nasdaq, marketCap: "24.5T" },
+    { name: "Shanghai Stock Exchange", value: latestStockExchangeData.sse, marketCap: "7.6T" }
   ];
 
   // Quick stats data
