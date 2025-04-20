@@ -20,6 +20,7 @@ import Tutorial from "./pages/Tutorial";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
 import CFPConsulting from "./pages/CFPConsulting";
+import CaseStudies from "./pages/CaseStudies";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -49,6 +50,7 @@ const App = () => (
             <Route path="/supply-chain" element={<SupplyChain />} />
             <Route path="/international-trade" element={<InternationalTrade />} />
             <Route path="/cfp-consulting" element={<CFPConsulting />} />
+            <Route path="/case-studies" element={<CaseStudies />} />
             <Route path="/broad-courses" element={<BroadCourses />} />
             <Route path="/team" element={<Team />} />
             <Route path="/tutorial" element={<Tutorial />} />

@@ -21,7 +21,8 @@ import {
   GraduationCap,
   Users,
   BookOpen,
-  InfoIcon
+  InfoIcon,
+  FileText
 } from "lucide-react";
 
 const dashboardItems = [
@@ -49,6 +50,10 @@ const resourceItems = [
   { title: "About", path: "/about", icon: InfoIcon },
 ];
 
+const caseStudiesItems = [
+  { title: "Case Studies", path: "/case-studies", icon: FileText }
+];
+
 export function AppSidebar() {
   return (
     <Sidebar>
@@ -60,6 +65,7 @@ export function AppSidebar() {
         <NavigationGroup title="Dashboard" items={dashboardItems} />
         <NavigationGroup title="Financial Data" items={financialItems} />
         <NavigationGroup title="Trade & Supply Chain" items={tradeItems} />
+        <NavigationGroup title="Case Studies" items={caseStudiesItems} />
         <NavigationGroup title="Resources" items={resourceItems} />
       </SidebarContent>
       
