@@ -39,9 +39,11 @@ const Index = () => {
   // Prepare data for exchange rate chart
   const recentExchangeData = exchangeRateData.slice(-6);
 
-  // Prepare GDP data
+  // Prepare GDP data for the most recent year
+  const latestYear = Math.max(...economicIndicators.map(item => item.year));
+  
   const gdpData = economicIndicators
-    .filter(item => item.year === 2022) // Use 2022 since we don't have 2023 data
+    .filter(item => item.year === latestYear)
     .map(item => ({
       name: item.country,
       value: item.gdp
@@ -119,9 +121,9 @@ const Index = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
-              <Globe className="mr-2 h-5 w-5" /> GDP by Major Economy
+              <Globe className="mr-2 h-5 w-5" /> GDP by Major Economy ({latestYear})
             </CardTitle>
-            <CardDescription>2023 GDP in Trillions USD</CardDescription>
+            <CardDescription>GDP in Trillions USD</CardDescription>
           </CardHeader>
           <CardContent className="h-80">
             <ChartContainer config={{}} className="h-full">
@@ -229,13 +231,13 @@ const Index = () => {
             <CardTitle className="flex items-center">
               <Ship className="mr-2 h-5 w-5" /> Supply Chain Metrics
             </CardTitle>
-            <CardDescription>2022 Regional Performance</CardDescription>
+            <CardDescription>Regional Performance</CardDescription>
           </CardHeader>
           <CardContent className="h-[230px]">
             <ChartContainer config={{}} className="h-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                  data={supplyChainData.filter(item => item.year === 2022)}
+                  data={supplyChainData.filter(item => item.year === Math.max(...supplyChainData.map(d => d.year)))}
                   margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" />

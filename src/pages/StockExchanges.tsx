@@ -12,7 +12,7 @@ import {
   Legend,
   ResponsiveContainer
 } from "recharts";
-import { stockExchangeData } from "@/data/marketData";
+import { stockExchangeData, stockExchangeDetails } from "@/data/marketData";
 import { Slider } from "@/components/ui/slider";
 import {
   Select,
@@ -88,6 +88,9 @@ const StockExchanges: React.FC = () => {
   const earliestYear = stockExchangeData[0]?.year || 1950;
   // Get the latest available year from data
   const latestYear = stockExchangeData[stockExchangeData.length - 1]?.year || 2023;
+  
+  // Get the most recent data for the summary cards
+  const latestData = stockExchangeData[stockExchangeData.length - 1];
 
   return (
     <div className="space-y-6">
@@ -209,9 +212,11 @@ const StockExchanges: React.FC = () => {
             <CardTitle className="text-lg font-medium">NYSE</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-msu-green">3,500</div>
+            <div className="text-3xl font-bold text-msu-green">{latestData.nyse.toLocaleString()}</div>
             <p className="text-sm text-muted-foreground mt-1">Current index value</p>
-            <div className="text-sm text-green-600 font-medium mt-2">+16.7% since 2020</div>
+            <div className="text-sm text-green-600 font-medium mt-2">
+              +{((latestData.nyse / 3000 - 1) * 100).toFixed(1)}% since 2020
+            </div>
           </CardContent>
         </Card>
         
@@ -220,9 +225,11 @@ const StockExchanges: React.FC = () => {
             <CardTitle className="text-lg font-medium">NASDAQ</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-blue-600">3,800</div>
+            <div className="text-3xl font-bold text-blue-600">{latestData.nasdaq.toLocaleString()}</div>
             <p className="text-sm text-muted-foreground mt-1">Current index value</p>
-            <div className="text-sm text-green-600 font-medium mt-2">+18.8% since 2020</div>
+            <div className="text-sm text-green-600 font-medium mt-2">
+              +{((latestData.nasdaq / 3200 - 1) * 100).toFixed(1)}% since 2020
+            </div>
           </CardContent>
         </Card>
         
@@ -231,9 +238,11 @@ const StockExchanges: React.FC = () => {
             <CardTitle className="text-lg font-medium">LSE</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-red-600">2,000</div>
+            <div className="text-3xl font-bold text-red-600">{latestData.lse.toLocaleString()}</div>
             <p className="text-sm text-muted-foreground mt-1">Current index value</p>
-            <div className="text-sm text-green-600 font-medium mt-2">+11.1% since 2020</div>
+            <div className="text-sm text-green-600 font-medium mt-2">
+              +{((latestData.lse / 1800 - 1) * 100).toFixed(1)}% since 2020
+            </div>
           </CardContent>
         </Card>
       </div>

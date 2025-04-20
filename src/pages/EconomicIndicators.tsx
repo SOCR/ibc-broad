@@ -23,40 +23,58 @@ import { TrendingUp, TrendingDown, BarChart2 } from "lucide-react";
 
 const COLORS = ["#18453B", "#7A9B76", "#A2AAAD", "#FF6B35", "#4361EE"];
 
-// GDP Growth data based on economic indicators
+// Process GDP Growth data based on economic indicators
 const getGdpGrowthData = () => {
-  return economicIndicators
-    .filter(item => item.year >= 2020)
-    .map((item, index) => {
-      const prevYear = economicIndicators.find(
-        prev => prev.year === item.year - 1 && prev.country === item.country
-      );
+  // Group by country and sort by year
+  const countries = [...new Set(economicIndicators.map(item => item.country))];
+  
+  const growthData = [];
+  
+  countries.forEach(country => {
+    const countryData = economicIndicators
+      .filter(item => item.country === country)
+      .sort((a, b) => a.year - b.year);
+    
+    // Calculate growth rates
+    for (let i = 1; i < countryData.length; i++) {
+      const prevYear = countryData[i-1];
+      const currentYear = countryData[i];
       
-      if (!prevYear) return { ...item, growth: 0 };
-      
-      const growth = ((item.gdp - prevYear.gdp) / prevYear.gdp) * 100;
-      return { ...item, growth };
-    });
+      const growth = ((currentYear.gdp - prevYear.gdp) / prevYear.gdp) * 100;
+      growthData.push({
+        country,
+        year: currentYear.year,
+        growth: parseFloat(growth.toFixed(2)),
+        prevYear: prevYear.year
+      });
+    }
+  });
+  
+  return growthData;
 };
 
 // Process data to ensure proper grouping by country for line charts
-const processDataForLineCharts = (data, metric) => {
-  const countries = [...new Set(data.map(item => item.country))];
+const processDataForLineCharts = (metric) => {
+  const countries = [...new Set(economicIndicators.map(item => item.country))];
   
-  return countries.map(country => {
-    const countryData = data
+  // Create country-specific datasets for each country
+  const result = countries.map(country => {
+    const countryData = economicIndicators
       .filter(item => item.country === country)
-      .sort((a, b) => a.year - b.year);
-      
-    return {
-      name: country,
-      data: countryData.map(item => ({
+      .sort((a, b) => a.year - b.year)
+      .map(item => ({
         year: item.year,
         value: item[metric],
         country: item.country
-      }))
+      }));
+      
+    return {
+      name: country,
+      data: countryData
     };
   });
+  
+  return result;
 };
 
 // Type for chart data
@@ -72,7 +90,9 @@ interface ProcessedLineData {
 }
 
 const EconomicIndicators: React.FC = () => {
-  const [selectedYear, setSelectedYear] = useState<number>(2022);
+  const years = [...new Set(economicIndicators.map(item => item.year))].sort((a, b) => a - b);
+  const [selectedYear, setSelectedYear] = useState<number>(Math.max(...years));
+  
   const gdpGrowthData = getGdpGrowthData();
   
   // Filter data for selected year
@@ -85,16 +105,16 @@ const EconomicIndicators: React.FC = () => {
   }));
   
   // Process data for line charts
-  const gdpLineData = useMemo(() => processDataForLineCharts(economicIndicators, 'gdp'), []);
-  const inflationLineData = useMemo(() => processDataForLineCharts(economicIndicators, 'inflation'), []);
-  const unemploymentLineData = useMemo(() => processDataForLineCharts(economicIndicators, 'unemployment'), []);
+  const gdpLineData = useMemo(() => processDataForLineCharts('gdp'), []);
+  const inflationLineData = useMemo(() => processDataForLineCharts('inflation'), []);
+  const unemploymentLineData = useMemo(() => processDataForLineCharts('unemployment'), []);
   
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Economic Indicators</h1>
       
       <div className="flex space-x-4 overflow-x-auto pb-2">
-        {Array.from(new Set(economicIndicators.map(item => item.year))).map(year => (
+        {years.map(year => (
           <button
             key={year}
             onClick={() => setSelectedYear(year)}
@@ -245,6 +265,7 @@ const EconomicIndicators: React.FC = () => {
                         strokeWidth={1.5} 
                         dot={{ r: 3 }} 
                         activeDot={{ r: 5 }}
+                        connectNulls
                       />
                     ))}
                   </LineChart>
@@ -265,9 +286,26 @@ const EconomicIndicators: React.FC = () => {
                     margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="year" />
+                    <XAxis 
+                      dataKey="year"
+                      tickFormatter={(value) => `${value}`}
+                    />
                     <YAxis />
-                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <ChartTooltip 
+                      content={(props) => {
+                        if (!props.active || !props.payload) return null;
+                        const data = props.payload[0]?.payload;
+                        if (!data) return null;
+                        return (
+                          <div className="bg-white p-2 border rounded shadow">
+                            <p>{`Year: ${data.year}`}</p>
+                            <p>{`Country: ${data.country}`}</p>
+                            <p>{`Growth: ${data.growth}%`}</p>
+                            <p>{`Compared to: ${data.prevYear}`}</p>
+                          </div>
+                        );
+                      }}
+                    />
                     <Legend />
                     <Bar 
                       dataKey="growth" 
@@ -313,6 +351,7 @@ const EconomicIndicators: React.FC = () => {
                         strokeWidth={1.5} 
                         dot={{ r: 3 }} 
                         activeDot={{ r: 5 }}
+                        connectNulls
                       />
                     ))}
                   </LineChart>
@@ -354,6 +393,7 @@ const EconomicIndicators: React.FC = () => {
                         strokeWidth={1.5} 
                         dot={{ r: 3 }} 
                         activeDot={{ r: 5 }}
+                        connectNulls
                       />
                     ))}
                   </LineChart>

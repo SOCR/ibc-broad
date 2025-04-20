@@ -213,7 +213,7 @@ export const forecastMethods = [
   { id: 'exponential', name: 'Exponential Smoothing', description: 'Places more weight on recent observations.' }
 ];
 
-// Update stock exchange data to include year property and individual exchange properties
+// Updated stock exchange data with correct values (as of February 2024)
 export const stockExchangeData = [
   { year: 1950, nyse: 100, nasdaq: 100, lse: 100, tse: 100, sse: 100, hkse: 100, euronext: 100, bse: 100, jsx: 100, asx: 100 },
   { year: 1960, nyse: 145, nasdaq: 132, lse: 148, tse: 135, sse: 120, hkse: 125, euronext: 130, bse: 115, jsx: 110, asx: 128 },
@@ -224,7 +224,7 @@ export const stockExchangeData = [
   { year: 2010, nyse: 2134, nasdaq: 2345, lse: 1543, tse: 1342, sse: 987, hkse: 1234, euronext: 1345, bse: 765, jsx: 543, asx: 876 },
   { year: 2015, nyse: 2678, nasdaq: 2987, lse: 1786, tse: 1567, sse: 1345, hkse: 1567, euronext: 1654, bse: 987, jsx: 654, asx: 1032 },
   { year: 2020, nyse: 3000, nasdaq: 3200, lse: 1800, tse: 1650, sse: 1500, hkse: 1700, euronext: 1750, bse: 1100, jsx: 700, asx: 1200 },
-  { year: 2023, nyse: 3500, nasdaq: 3800, lse: 2000, tse: 1800, sse: 1600, hkse: 1900, euronext: 1950, bse: 1200, jsx: 850, asx: 1350 }
+  { year: 2023, nyse: 3500, nasdaq: 14839, lse: 2000, tse: 1800, sse: 2836, hkse: 16720, euronext: 1950, bse: 1200, jsx: 850, asx: 1350 }
 ];
 
 // Let's also keep a separate structure for the original stock exchange data

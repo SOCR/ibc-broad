@@ -10,7 +10,8 @@ import {
   CartesianGrid,
   Legend,
   ResponsiveContainer,
-  ReferenceArea
+  ReferenceArea,
+  Tooltip
 } from "recharts";
 import { Calendar } from "lucide-react";
 import { 
@@ -135,8 +136,40 @@ export const ExchangeRateChart: React.FC<ExchangeRateChartProps> = ({
                 }}
               />
               <YAxis />
-              <ChartTooltipContent
-                labelFormatter={(label) => `Date: ${label}`}
+              <Tooltip 
+                content={(props) => {
+                  if (!props.active || !props.payload) return null;
+                  const payload = props.payload;
+                  const date = props.label;
+
+                  return (
+                    <div className="bg-white p-3 border rounded shadow">
+                      <p className="font-medium">Date: {date}</p>
+                      <div className="mt-2">
+                        {payload.map((entry: any, index: number) => {
+                          const currency = currencies.find(c => c.code === entry.dataKey);
+                          return (
+                            <div key={index} className="flex items-center justify-between mt-1">
+                              <div className="flex items-center">
+                                <div 
+                                  className="w-3 h-3 rounded-full mr-2" 
+                                  style={{ backgroundColor: entry.color }}
+                                />
+                                <span>{currency?.name || entry.dataKey}</span>
+                              </div>
+                              <span className="font-mono ml-4">{entry.value}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      {props.payload[0]?.payload?.isForecasted && (
+                        <p className="text-xs mt-2 text-amber-600 font-medium">
+                          Forecasted value
+                        </p>
+                      )}
+                    </div>
+                  );
+                }}
               />
               <Legend />
               {enableForecast && lastActualDate && (
@@ -157,7 +190,8 @@ export const ExchangeRateChart: React.FC<ExchangeRateChartProps> = ({
                   stroke={currency.color} 
                   strokeWidth={1.5} 
                   dot={{ r: 3 }} 
-                  activeDot={{ r: 5 }} 
+                  activeDot={{ r: 5 }}
+                  connectNulls
                 />
               ))}
             </LineChart>
