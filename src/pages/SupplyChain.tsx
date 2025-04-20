@@ -24,7 +24,7 @@ import { SupplyChainData } from "@/types/market";
 import { TruckIcon, Ship, Clock, DollarSign } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { download, info } from "lucide-react";
+import { Download, Info } from "lucide-react";
 
 // Data sources for popovers
 const SUPPLYCHAIN_SOURCES = {
@@ -306,12 +306,12 @@ const SupplyChain: React.FC = () => {
                     onClick={() => downloadCSV(containerVolumeData.flatMap(d => d.data), "container-volume.csv")}
                     className="hover-scale rounded p-1 hover:bg-gray-100"
                   >
-                    {download && React.createElement(download, { size: 16, className: "text-muted-foreground" })}
+                    <Download size={16} className="text-muted-foreground" />
                   </button>
                   <Popover>
                     <PopoverTrigger asChild>
                       <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
-                        {info && React.createElement(info, { size: 16, className: "text-muted-foreground" })}
+                        <Info size={16} className="text-muted-foreground" />
                       </button>
                     </PopoverTrigger>
                     <PopoverContent side="top" className="text-xs max-w-xs">
@@ -368,12 +368,12 @@ const SupplyChain: React.FC = () => {
                     onClick={() => downloadCSV(freightCostsByYear, "freight-costs.csv")}
                     className="hover-scale rounded p-1 hover:bg-gray-100"
                   >
-                    {download && React.createElement(download, { size: 16, className: "text-muted-foreground" })}
+                    <Download size={16} className="text-muted-foreground" />
                   </button>
                   <Popover>
                     <PopoverTrigger asChild>
                       <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
-                        {info && React.createElement(info, { size: 16, className: "text-muted-foreground" })}
+                        <Info size={16} className="text-muted-foreground" />
                       </button>
                     </PopoverTrigger>
                     <PopoverContent side="top" className="text-xs max-w-xs">
@@ -421,12 +421,12 @@ const SupplyChain: React.FC = () => {
                     onClick={() => downloadCSV(deliveryTimeData.flatMap(d => d.data), "delivery-time.csv")}
                     className="hover-scale rounded p-1 hover:bg-gray-100"
                   >
-                    {download && React.createElement(download, { size: 16, className: "text-muted-foreground" })}
+                    <Download size={16} className="text-muted-foreground" />
                   </button>
                   <Popover>
                     <PopoverTrigger asChild>
                       <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
-                        {info && React.createElement(info, { size: 16, className: "text-muted-foreground" })}
+                        <Info size={16} className="text-muted-foreground" />
                       </button>
                     </PopoverTrigger>
                     <PopoverContent side="top" className="text-xs max-w-xs">
@@ -483,12 +483,12 @@ const SupplyChain: React.FC = () => {
                 onClick={() => downloadCSV(radarData, "supplychain-metrics.csv")}
                 className="hover-scale rounded p-1 hover:bg-gray-100"
               >
-                {download && React.createElement(download, { size: 16, className: "text-muted-foreground" })}
+                <Download size={16} className="text-muted-foreground" />
               </button>
               <Popover>
                 <PopoverTrigger asChild>
                   <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
-                    {info && React.createElement(info, { size: 16, className: "text-muted-foreground" })}
+                    <Info size={16} className="text-muted-foreground" />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent side="top" className="text-xs max-w-xs">

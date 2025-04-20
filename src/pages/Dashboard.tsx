@@ -19,7 +19,7 @@ import { DashboardStats } from "@/components/dashboard/DashboardStats";
 import { ChartCard } from "@/components/dashboard/ChartCard";
 import { Tooltip as ShadcnTooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { download, info } from "lucide-react";
+import { Download, Info } from "lucide-react";
 
 // Annualized Market Data (years not months)
 const annualStockData = [
@@ -142,12 +142,12 @@ const Dashboard: React.FC = () => {
               <button aria-label="Download Data"
                       onClick={() => downloadCSV(ibexOverTimeData, "ibex-scores.csv")}
                       className="hover-scale rounded p-1 hover:bg-gray-100">
-                {download && React.createElement(download, { size: 16, className: "text-muted-foreground" })}
+                <Download size={16} className="text-muted-foreground" />
               </button>
               <Popover>
                 <PopoverTrigger asChild>
                   <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
-                    {info && React.createElement(info, { size: 16, className: "text-muted-foreground" })}
+                    <Info size={16} className="text-muted-foreground" />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent side="top" className="text-xs max-w-xs">
@@ -181,12 +181,12 @@ const Dashboard: React.FC = () => {
               <button aria-label="Download Data"
                 onClick={() => downloadCSV(stateDistributionData, "state-distribution.csv")}
                 className="hover-scale rounded p-1 hover:bg-gray-100">
-                {download && React.createElement(download, { size: 16, className: "text-muted-foreground" })}
+                <Download size={16} className="text-muted-foreground" />
               </button>
               <Popover>
                 <PopoverTrigger asChild>
                   <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
-                    {info && React.createElement(info, { size: 16, className: "text-muted-foreground" })}
+                    <Info size={16} className="text-muted-foreground" />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent side="top" className="text-xs max-w-xs">
@@ -223,12 +223,12 @@ const Dashboard: React.FC = () => {
             <button aria-label="Download Data"
               onClick={() => downloadCSV(annualStockData, "market-performance.csv")}
               className="hover-scale rounded p-1 hover:bg-gray-100">
-              {download && React.createElement(download, { size: 16, className: "text-muted-foreground" })}
+              <Download size={16} className="text-muted-foreground" />
             </button>
             <Popover>
               <PopoverTrigger asChild>
                 <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
-                  {info && React.createElement(info, { size: 16, className: "text-muted-foreground" })}
+                  <Info size={16} className="text-muted-foreground" />
                 </button>
               </PopoverTrigger>
               <PopoverContent side="top" className="text-xs max-w-xs">
@@ -260,12 +260,12 @@ const Dashboard: React.FC = () => {
             <button aria-label="Download Data"
               onClick={() => downloadCSV(economicData, "economic-indicators.csv")}
               className="hover-scale rounded p-1 hover:bg-gray-100">
-              {download && React.createElement(download, { size: 16, className: "text-muted-foreground" })}
+              <Download size={16} className="text-muted-foreground" />
             </button>
             <Popover>
               <PopoverTrigger asChild>
                 <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
-                  {info && React.createElement(info, { size: 16, className: "text-muted-foreground" })}
+                  <Info size={16} className="text-muted-foreground" />
                 </button>
               </PopoverTrigger>
               <PopoverContent side="top" className="text-xs max-w-xs">
