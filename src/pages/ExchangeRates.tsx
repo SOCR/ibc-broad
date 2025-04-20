@@ -118,7 +118,7 @@ const ExchangeRates: React.FC = () => {
     }
   }, [exchangeRateData, selectedDateRange, enableForecast, forecastMethod, forecastYears]);
   
-  // Update this section to handle the empty object case properly
+  // Update this section to handle the empty object case properly and fix the type issues
   const latestData = exchangeRateData.length > 0 ? exchangeRateData[exchangeRateData.length - 1] : { date: '' };
   const previousData = exchangeRateData.length > 1 ? exchangeRateData[exchangeRateData.length - 2] : { date: '' };
   const lastActualDate = latestData.date || "";
@@ -135,12 +135,13 @@ const ExchangeRates: React.FC = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {currencies.map((currency) => {
+          // Fix type conversion issue by explicitly converting to number where needed
           const currentValue = typeof latestData[currency.code as keyof typeof latestData] === 'number' 
-            ? latestData[currency.code as keyof typeof latestData] as number 
+            ? Number(latestData[currency.code as keyof typeof latestData])
             : 0;
           
           const previousValue = typeof previousData[currency.code as keyof typeof previousData] === 'number'
-            ? previousData[currency.code as keyof typeof previousData] as number
+            ? Number(previousData[currency.code as keyof typeof previousData])
             : 0;
           
           // Calculate percent change with validation
