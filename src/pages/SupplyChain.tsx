@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -24,6 +23,34 @@ import { supplyChainData } from "@/data/marketData";
 import { SupplyChainData } from "@/types/market";
 import { TruckIcon, Ship, Clock, DollarSign } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { download, info } from "lucide-react";
+
+// Data sources for popovers
+const SUPPLYCHAIN_SOURCES = {
+  container: "Data Source: Drewry Shipping Consultants Ltd. (latest), supplemented by regional port authorities and UNCTAD (2022).",
+  freight: "Data Source: Freightos Baltic Index (FBX), UNCTAD estimates, 2019-2022.",
+  delivery: "Data Source: Sea-Intelligence Maritime Analysis, World Bank logistics database (2022).",
+  radar: "Data Source: Calculated from aggregated shipping data, World Bank, Sea-Intelligence Maritime Analysis, 2022.",
+};
+
+function downloadCSV(data: any[], filename = "chart-data.csv") {
+  if (!data?.length) return;
+  const csvRows = [];
+  const headers = Object.keys(data[0]);
+  csvRows.push(headers.join(","));
+  for (const row of data) {
+    const vals = headers.map(header => JSON.stringify(row[header] ?? ""));
+    csvRows.push(vals.join(","));
+  }
+  const blob = new Blob([csvRows.join("\n")], { type: "text/csv" });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  window.URL.revokeObjectURL(url);
+}
 
 // Process data to ensure proper grouping by region for line charts
 const processDataForLineCharts = (data: any[], metric: keyof SupplyChainData) => {
@@ -272,7 +299,27 @@ const SupplyChain: React.FC = () => {
         <TabsContent value="volume" className="space-y-6 mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>Container Volume Trends (Million TEU)</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle>Container Volume Trends (Million TEU)</CardTitle>
+                <div className="flex items-center space-x-2">
+                  <button aria-label="Download Data"
+                    onClick={() => downloadCSV(containerVolumeData.flatMap(d => d.data), "container-volume.csv")}
+                    className="hover-scale rounded p-1 hover:bg-gray-100"
+                  >
+                    {download && React.createElement(download, { size: 16, className: "text-muted-foreground" })}
+                  </button>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
+                        {info && React.createElement(info, { size: 16, className: "text-muted-foreground" })}
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent side="top" className="text-xs max-w-xs">
+                      {SUPPLYCHAIN_SOURCES.container}
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="h-80">
               <ChartContainer config={{}} className="h-full">
@@ -314,7 +361,27 @@ const SupplyChain: React.FC = () => {
         <TabsContent value="costs" className="space-y-6 mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>Freight Costs Comparison (USD)</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle>Freight Costs Comparison (USD)</CardTitle>
+                <div className="flex items-center space-x-2">
+                  <button aria-label="Download Data"
+                    onClick={() => downloadCSV(freightCostsByYear, "freight-costs.csv")}
+                    className="hover-scale rounded p-1 hover:bg-gray-100"
+                  >
+                    {download && React.createElement(download, { size: 16, className: "text-muted-foreground" })}
+                  </button>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
+                        {info && React.createElement(info, { size: 16, className: "text-muted-foreground" })}
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent side="top" className="text-xs max-w-xs">
+                      {SUPPLYCHAIN_SOURCES.freight}
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="h-80">
               <ChartContainer config={{}} className="h-full">
@@ -347,7 +414,27 @@ const SupplyChain: React.FC = () => {
         <TabsContent value="time" className="space-y-6 mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>Delivery Time Trends (Days)</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle>Delivery Time Trends (Days)</CardTitle>
+                <div className="flex items-center space-x-2">
+                  <button aria-label="Download Data"
+                    onClick={() => downloadCSV(deliveryTimeData.flatMap(d => d.data), "delivery-time.csv")}
+                    className="hover-scale rounded p-1 hover:bg-gray-100"
+                  >
+                    {download && React.createElement(download, { size: 16, className: "text-muted-foreground" })}
+                  </button>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
+                        {info && React.createElement(info, { size: 16, className: "text-muted-foreground" })}
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent side="top" className="text-xs max-w-xs">
+                      {SUPPLYCHAIN_SOURCES.delivery}
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="h-80">
               <ChartContainer config={{}} className="h-full">
@@ -389,7 +476,27 @@ const SupplyChain: React.FC = () => {
       
       <Card>
         <CardHeader>
-          <CardTitle>Supply Chain Metrics Comparison (2022)</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>Supply Chain Metrics Comparison (2022)</CardTitle>
+            <div className="flex items-center space-x-2">
+              <button aria-label="Download Data"
+                onClick={() => downloadCSV(radarData, "supplychain-metrics.csv")}
+                className="hover-scale rounded p-1 hover:bg-gray-100"
+              >
+                {download && React.createElement(download, { size: 16, className: "text-muted-foreground" })}
+              </button>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
+                    {info && React.createElement(info, { size: 16, className: "text-muted-foreground" })}
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent side="top" className="text-xs max-w-xs">
+                  {SUPPLYCHAIN_SOURCES.radar}
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="h-96">
           <ChartContainer config={{}} className="h-full">

@@ -18,6 +18,8 @@ import { FileText } from "lucide-react";
 import { DashboardStats } from "@/components/dashboard/DashboardStats";
 import { ChartCard } from "@/components/dashboard/ChartCard";
 import { Tooltip as ShadcnTooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { download, info } from "lucide-react";
 
 // Annualized Market Data (years not months)
 const annualStockData = [
@@ -49,6 +51,32 @@ const statExplanations = {
   score: "The Current IBEX Score reflects the latest measurement of international business activity and engagement benchmarks for community colleges across the US. The higher the score, the more active and comprehensive the programs.",
   rankings: "State Rankings display the distribution of states by their activity level in international business education. 'Highly Active' denotes top engagement, 'Active' for moderate, and 'Less Active' for limited participation.",
   course: "The Top International Course spotlights the most commonly offered international business course across US community colleges and the percentage of colleges including it in their curriculum."
+};
+
+// Add CSV download helper
+function downloadCSV(data: any[], filename = "chart-data.csv") {
+  if (!data?.length) return;
+  const csvRows = [];
+  const headers = Object.keys(data[0]);
+  csvRows.push(headers.join(","));
+  for (const row of data) {
+    const vals = headers.map(header => JSON.stringify(row[header] ?? ""));
+    csvRows.push(vals.join(","));
+  }
+  const blob = new Blob([csvRows.join("\n")], { type: "text/csv" });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  window.URL.revokeObjectURL(url);
+}
+
+const DASHBOARD_SOURCES = {
+  ibex: "Data Source: Michigan State University International Business Center (IBC), IBEX Survey Reports 2018-2023.",
+  stateDist: "Data Source: IBC Benchmarking State Activity Database, latest update 2023.",
+  market: "Data Source: Yahoo Finance Market Data annualized, S&P data and major world indices.",
+  economic: "Data Source: IMF World Economic Outlook and World Bank, 2023.",
 };
 
 const Dashboard: React.FC = () => {
@@ -107,7 +135,28 @@ const Dashboard: React.FC = () => {
       </TooltipProvider>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <ChartCard title="IBEX Scores Over Time">
+        <ChartCard title={
+          <div className="flex items-center justify-between">
+            <span>IBEX Scores Over Time</span>
+            <div className="flex items-center space-x-2">
+              <button aria-label="Download Data"
+                      onClick={() => downloadCSV(ibexOverTimeData, "ibex-scores.csv")}
+                      className="hover-scale rounded p-1 hover:bg-gray-100">
+                {download && React.createElement(download, { size: 16, className: "text-muted-foreground" })}
+              </button>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
+                    {info && React.createElement(info, { size: 16, className: "text-muted-foreground" })}
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent side="top" className="text-xs max-w-xs">
+                  {DASHBOARD_SOURCES.ibex}
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+        }>
           <LineChart
             data={ibexOverTimeData}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
@@ -125,7 +174,28 @@ const Dashboard: React.FC = () => {
           </LineChart>
         </ChartCard>
 
-        <ChartCard title="State Activity Distribution">
+        <ChartCard title={
+          <div className="flex items-center justify-between">
+            <span>State Activity Distribution</span>
+            <div className="flex items-center space-x-2">
+              <button aria-label="Download Data"
+                onClick={() => downloadCSV(stateDistributionData, "state-distribution.csv")}
+                className="hover-scale rounded p-1 hover:bg-gray-100">
+                {download && React.createElement(download, { size: 16, className: "text-muted-foreground" })}
+              </button>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
+                    {info && React.createElement(info, { size: 16, className: "text-muted-foreground" })}
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent side="top" className="text-xs max-w-xs">
+                  {DASHBOARD_SOURCES.stateDist}
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+        }>
           <PieChart>
             <Pie
               data={stateDistributionData}
@@ -146,8 +216,28 @@ const Dashboard: React.FC = () => {
         </ChartCard>
       </div>
 
-      {/* Use annual market data for Market Performance! */}
-      <ChartCard title="Market Performance">
+      <ChartCard title={
+        <div className="flex items-center justify-between">
+          <span>Market Performance</span>
+          <div className="flex items-center space-x-2">
+            <button aria-label="Download Data"
+              onClick={() => downloadCSV(annualStockData, "market-performance.csv")}
+              className="hover-scale rounded p-1 hover:bg-gray-100">
+              {download && React.createElement(download, { size: 16, className: "text-muted-foreground" })}
+            </button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
+                  {info && React.createElement(info, { size: 16, className: "text-muted-foreground" })}
+                </button>
+              </PopoverTrigger>
+              <PopoverContent side="top" className="text-xs max-w-xs">
+                {DASHBOARD_SOURCES.market}
+              </PopoverContent>
+            </Popover>
+          </div>
+        </div>
+      }>
         <LineChart
           data={annualStockData}
           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
@@ -163,7 +253,28 @@ const Dashboard: React.FC = () => {
         </LineChart>
       </ChartCard>
 
-      <ChartCard title="Economic Indicators: Major Economies">
+      <ChartCard title={
+        <div className="flex items-center justify-between">
+          <span>Economic Indicators: Major Economies</span>
+          <div className="flex items-center space-x-2">
+            <button aria-label="Download Data"
+              onClick={() => downloadCSV(economicData, "economic-indicators.csv")}
+              className="hover-scale rounded p-1 hover:bg-gray-100">
+              {download && React.createElement(download, { size: 16, className: "text-muted-foreground" })}
+            </button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
+                  {info && React.createElement(info, { size: 16, className: "text-muted-foreground" })}
+                </button>
+              </PopoverTrigger>
+              <PopoverContent side="top" className="text-xs max-w-xs">
+                {DASHBOARD_SOURCES.economic}
+              </PopoverContent>
+            </Popover>
+          </div>
+        </div>
+      }>
         <BarChart
           data={economicData}
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
