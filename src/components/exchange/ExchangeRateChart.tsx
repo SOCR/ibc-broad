@@ -132,7 +132,10 @@ export const ExchangeRateChart: React.FC<ExchangeRateChartProps> = ({
                 dataKey="date"
                 tickFormatter={(value) => {
                   // For monthly data, show just year if January
-                  return value.endsWith("-01") ? value.split("-")[0] : value;
+                  const dateParts = value.split("-");
+                  const month = dateParts[1];
+                  const year = dateParts[0];
+                  return month === "01" ? year : `${year}-${month}`;
                 }}
               />
               <YAxis />
@@ -148,6 +151,7 @@ export const ExchangeRateChart: React.FC<ExchangeRateChartProps> = ({
                       <div className="mt-2">
                         {payload.map((entry: any, index: number) => {
                           const currency = currencies.find(c => c.code === entry.dataKey);
+                          if (!currency) return null;
                           return (
                             <div key={index} className="flex items-center justify-between mt-1">
                               <div className="flex items-center">
@@ -155,9 +159,9 @@ export const ExchangeRateChart: React.FC<ExchangeRateChartProps> = ({
                                   className="w-3 h-3 rounded-full mr-2" 
                                   style={{ backgroundColor: entry.color }}
                                 />
-                                <span>{currency?.name || entry.dataKey}</span>
+                                <span>{currency.name}</span>
                               </div>
-                              <span className="font-mono ml-4">{entry.value}</span>
+                              <span className="font-mono ml-4">{entry.value.toFixed(2)}</span>
                             </div>
                           );
                         })}

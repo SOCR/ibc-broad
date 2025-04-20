@@ -91,6 +91,7 @@ const StockExchanges: React.FC = () => {
   
   // Get the most recent data for the summary cards
   const latestData = stockExchangeData[stockExchangeData.length - 1];
+  const previousYearData = stockExchangeData[stockExchangeData.length - 2];
 
   return (
     <div className="space-y-6">
@@ -172,7 +173,7 @@ const StockExchanges: React.FC = () => {
       <Card>
         <CardHeader>
           <CardTitle>
-            Stock Exchange Index Values ({compareMode ? `Normalized to ${baseYear} (%)` : '1950-2023'})
+            Stock Exchange Index Values {compareMode ? `(Normalized to ${baseYear} = 100%)` : `(1950-2023)`}
           </CardTitle>
         </CardHeader>
         <CardContent className="h-[500px]">
@@ -183,7 +184,12 @@ const StockExchanges: React.FC = () => {
                 margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="year" />
+                <XAxis 
+                  dataKey="year"
+                  type="number"
+                  domain={['dataMin', 'dataMax']}
+                  ticks={filteredData.map(item => item.year)}
+                />
                 <YAxis />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Legend />
@@ -215,7 +221,7 @@ const StockExchanges: React.FC = () => {
             <div className="text-3xl font-bold text-msu-green">{latestData.nyse.toLocaleString()}</div>
             <p className="text-sm text-muted-foreground mt-1">Current index value</p>
             <div className="text-sm text-green-600 font-medium mt-2">
-              +{((latestData.nyse / 3000 - 1) * 100).toFixed(1)}% since 2020
+              +{((latestData.nyse / previousYearData.nyse - 1) * 100).toFixed(1)}% since {previousYearData.year}
             </div>
           </CardContent>
         </Card>
@@ -228,7 +234,7 @@ const StockExchanges: React.FC = () => {
             <div className="text-3xl font-bold text-blue-600">{latestData.nasdaq.toLocaleString()}</div>
             <p className="text-sm text-muted-foreground mt-1">Current index value</p>
             <div className="text-sm text-green-600 font-medium mt-2">
-              +{((latestData.nasdaq / 3200 - 1) * 100).toFixed(1)}% since 2020
+              +{((latestData.nasdaq / previousYearData.nasdaq - 1) * 100).toFixed(1)}% since {previousYearData.year}
             </div>
           </CardContent>
         </Card>
@@ -241,7 +247,7 @@ const StockExchanges: React.FC = () => {
             <div className="text-3xl font-bold text-red-600">{latestData.lse.toLocaleString()}</div>
             <p className="text-sm text-muted-foreground mt-1">Current index value</p>
             <div className="text-sm text-green-600 font-medium mt-2">
-              +{((latestData.lse / 1800 - 1) * 100).toFixed(1)}% since 2020
+              +{((latestData.lse / previousYearData.lse - 1) * 100).toFixed(1)}% since {previousYearData.year}
             </div>
           </CardContent>
         </Card>

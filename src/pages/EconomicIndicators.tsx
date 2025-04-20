@@ -23,7 +23,7 @@ import { TrendingUp, TrendingDown, BarChart2 } from "lucide-react";
 
 const COLORS = ["#18453B", "#7A9B76", "#A2AAAD", "#FF6B35", "#4361EE"];
 
-// Process GDP Growth data based on economic indicators
+// Process GDP Growth data based on economic indicators - fixed to avoid repeating years
 const getGdpGrowthData = () => {
   // Group by country and sort by year
   const countries = [...new Set(economicIndicators.map(item => item.country))];
@@ -45,7 +45,9 @@ const getGdpGrowthData = () => {
         country,
         year: currentYear.year,
         growth: parseFloat(growth.toFixed(2)),
-        prevYear: prevYear.year
+        prevYear: prevYear.year,
+        // Create a unique identifier for x-axis
+        periodLabel: `${country}-${currentYear.year}`
       });
     }
   });
@@ -108,6 +110,23 @@ const EconomicIndicators: React.FC = () => {
   const gdpLineData = useMemo(() => processDataForLineCharts('gdp'), []);
   const inflationLineData = useMemo(() => processDataForLineCharts('inflation'), []);
   const unemploymentLineData = useMemo(() => processDataForLineCharts('unemployment'), []);
+
+  // Group GDP growth data by country and year for better visualization
+  const groupedGdpGrowthData = useMemo(() => {
+    const dataByCountry = {};
+    countries.forEach(country => {
+      dataByCountry[country] = [];
+    });
+
+    gdpGrowthData.forEach(item => {
+      dataByCountry[item.country].push(item);
+    });
+
+    return dataByCountry;
+  }, []);
+  
+  // Get unique countries for data display
+  const countries = [...new Set(economicIndicators.map(item => item.country))];
   
   return (
     <div className="space-y-6">
@@ -287,8 +306,15 @@ const EconomicIndicators: React.FC = () => {
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis 
-                      dataKey="year"
-                      tickFormatter={(value) => `${value}`}
+                      dataKey="periodLabel"
+                      tickFormatter={(value) => {
+                        // Display just year and country for better readability
+                        const [country, year] = value.split('-');
+                        return `${country} ${year}`;
+                      }}
+                      height={60}
+                      angle={-45}
+                      textAnchor="end"
                     />
                     <YAxis />
                     <ChartTooltip 
@@ -298,8 +324,8 @@ const EconomicIndicators: React.FC = () => {
                         if (!data) return null;
                         return (
                           <div className="bg-white p-2 border rounded shadow">
-                            <p>{`Year: ${data.year}`}</p>
                             <p>{`Country: ${data.country}`}</p>
+                            <p>{`Year: ${data.year}`}</p>
                             <p>{`Growth: ${data.growth}%`}</p>
                             <p>{`Compared to: ${data.prevYear}`}</p>
                           </div>

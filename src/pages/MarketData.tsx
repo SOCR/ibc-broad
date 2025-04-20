@@ -132,6 +132,7 @@ const MarketData: React.FC = () => {
                       type="number"
                       domain={['dataMin', 'dataMax']}
                       allowDuplicatedCategory={false}
+                      ticks={usaData.map(d => d.year)} // Show all years explicitly
                     />
                     <YAxis />
                     <ChartTooltip content={<ChartTooltipContent />} />
@@ -189,6 +190,7 @@ const MarketData: React.FC = () => {
                         type="number"
                         domain={['dataMin', 'dataMax']}
                         allowDuplicatedCategory={false}
+                        ticks={usaData.map(d => d.year)} // Show all years explicitly
                       />
                       <YAxis />
                       <ChartTooltip content={<ChartTooltipContent />} />
@@ -245,6 +247,7 @@ const MarketData: React.FC = () => {
                         type="number"
                         domain={['dataMin', 'dataMax']}
                         allowDuplicatedCategory={false}
+                        ticks={usaData.map(d => d.year)} // Show all years explicitly
                       />
                       <YAxis />
                       <ChartTooltip content={<ChartTooltipContent />} />
@@ -304,6 +307,7 @@ const MarketData: React.FC = () => {
                       type="number"
                       domain={['dataMin', 'dataMax']}
                       allowDuplicatedCategory={false}
+                      ticks={usaData.map(d => d.year)} // Show all years explicitly
                     />
                     <YAxis />
                     <ChartTooltip content={<ChartTooltipContent />} />

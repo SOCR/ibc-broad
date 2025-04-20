@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { exchangeRateData, forecastMethods } from "@/data/marketData";
 import { dateRanges } from "@/data/constants";
@@ -55,10 +56,12 @@ const ExchangeRates: React.FC = () => {
     }
     
     const forecastedData = [...filteredData];
+    const lastForecastedIndex = forecastedData.length - 1;
+    const lastActualDate = forecastedData[lastForecastedIndex].date;
     
     currencies.forEach(currency => {
       const dataPoints = filteredData.map(item => item[currency.code as keyof typeof item] as number);
-      const currencyForecast = createMultiMethodForecast(dataPoints, forecastYears)[forecastMethod];
+      const currencyForecast = createMultiMethodForecast(dataPoints, forecastYears * 12)[forecastMethod];
       
       currencyForecast.forEach((value, index) => {
         const lastDate = new Date(filteredData[filteredData.length - 1].date + "-01");
@@ -70,7 +73,8 @@ const ExchangeRates: React.FC = () => {
         if (existingItemIndex >= 0) {
           forecastedData[existingItemIndex] = {
             ...forecastedData[existingItemIndex],
-            [currency.code]: value
+            [currency.code]: value,
+            isForecasted: true
           };
         } else {
           const newDataPoint: any = { 
@@ -138,7 +142,7 @@ const ExchangeRates: React.FC = () => {
         forecastYears={forecastYears}
         setForecastYears={setForecastYears}
         forecastMethods={forecastMethods}
-        lastActualDate={lastActualDate}
+        lastActualDate={enableForecast ? lastActualDate : undefined}
       />
       
       {enableForecast && (
