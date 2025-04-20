@@ -1,3 +1,4 @@
+
 import React from "react";
 import { 
   BarChart, 
@@ -231,13 +232,14 @@ const Dashboard: React.FC = () => {
                       <PopoverTrigger asChild>
                         <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
                           <Info size={16} className="text-muted-foreground" />
-                        </PopoverTrigger>
-                        <PopoverContent side="top" className="text-xs max-w-xs">
-                          {DASHBOARD_SOURCES.market}
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                  }
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent side="top" className="text-xs max-w-xs">
+                        {DASHBOARD_SOURCES.market}
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                }
       >
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
@@ -268,13 +270,14 @@ const Dashboard: React.FC = () => {
                       <PopoverTrigger asChild>
                         <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
                           <Info size={16} className="text-muted-foreground" />
-                        </PopoverTrigger>
-                        <PopoverContent side="top" className="text-xs max-w-xs">
-                          {DASHBOARD_SOURCES.economic}
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                  }
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent side="top" className="text-xs max-w-xs">
+                        {DASHBOARD_SOURCES.economic}
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                }
       >
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
