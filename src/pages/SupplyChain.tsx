@@ -45,6 +45,66 @@ const processDataForLineCharts = (data: any[], metric: keyof SupplyChainData) =>
   });
 };
 
+// Prepare data for radar chart with more metrics for the spider chart
+const prepareRadarData = (data: any[]) => {
+  const regions = Array.from(new Set(data.map(item => item.region)));
+  const latestYear = Math.max(...data.map(item => item.year));
+  
+  return regions.map(region => {
+    const regionData = data.filter(item => item.region === region && item.year === latestYear)[0] || {};
+    
+    // Calculate efficiency score (inverse of delivery time, normalized)
+    const maxDeliveryTime = Math.max(...data.filter(item => item.year === latestYear).map(item => item.deliveryTime));
+    const efficiencyScore = regionData.deliveryTime ? (10 - (regionData.deliveryTime / maxDeliveryTime * 10) + 3) : 0;
+    
+    // Calculate cost efficiency (inverse of freight costs, normalized)
+    const maxFreightCost = Math.max(...data.filter(item => item.year === latestYear).map(item => item.freightCosts));
+    const costEfficiency = regionData.freightCosts ? (10 - (regionData.freightCosts / maxFreightCost * 10) + 3) : 0;
+    
+    // Volume normalized to 0-10 scale
+    const maxVolume = Math.max(...data.filter(item => item.year === latestYear).map(item => item.containerVolume));
+    const volumeScore = regionData.containerVolume ? (regionData.containerVolume / maxVolume * 10) : 0;
+    
+    // Add growth rate calculation compared to previous year
+    const previousYearData = data.find(item => 
+      item.region === region && item.year === latestYear - 1
+    );
+    
+    const volumeGrowth = previousYearData && regionData.containerVolume
+      ? ((regionData.containerVolume - previousYearData.containerVolume) / previousYearData.containerVolume * 5) + 5
+      : 5;
+      
+    const reliabilityScore = Math.min(10, 5 + (1 / regionData.deliveryTime * 20));
+    
+    return {
+      region,
+      "Capacity": volumeScore,
+      "Cost Efficiency": costEfficiency,
+      "Delivery Speed": efficiencyScore,
+      "Growth Rate": volumeGrowth,
+      "Reliability": reliabilityScore
+    };
+  });
+};
+
+// Prepare bar chart data for each region, ensuring each year appears only once
+const prepareFreightCostsData = (data: any[]) => {
+  const regions = [...new Set(data.map(item => item.region))];
+  const years = [...new Set(data.map(item => item.year))].sort((a, b) => a - b);
+  
+  // Create one entry per year with all regions
+  return years.map(year => {
+    const yearData: any = { year };
+    
+    regions.forEach(region => {
+      const regionData = data.find(item => item.region === region && item.year === year);
+      yearData[region] = regionData?.freightCosts || 0;
+    });
+    
+    return yearData;
+  });
+};
+
 const SupplyChain: React.FC = () => {
   const [selectedRegion, setSelectedRegion] = useState<string>("all");
   
@@ -62,16 +122,8 @@ const SupplyChain: React.FC = () => {
     return regionData[regionData.length - 1];
   });
   
-  // Prepare data for radar chart
-  const radarData = regions.map(region => {
-    const regionData = supplyChainData.filter(item => item.region === region && item.year === 2022)[0];
-    return {
-      region,
-      "Container Volume": regionData.containerVolume / 10, // Scale for better visualization
-      "Freight Costs": regionData.freightCosts / 200, // Scale for better visualization
-      "Delivery Time": regionData.deliveryTime
-    };
-  });
+  // Prepare improved data for radar chart
+  const radarData = useMemo(() => prepareRadarData(supplyChainData), []);
 
   // Prepare line chart data for each region
   const containerVolumeData = useMemo(() => 
@@ -86,19 +138,13 @@ const SupplyChain: React.FC = () => {
     processDataForLineCharts(supplyChainData, 'deliveryTime'), 
   []);
 
-  // Prepare bar chart data for each region
-  const prepareRegionData = (metric: keyof SupplyChainData) => {
-    return regions.map(region => {
-      const regionData = supplyChainData
-        .filter(item => item.region === region && item.year >= 2020)
-        .map(item => ({
-          year: item.year,
-          value: item[metric],
-          region: item.region
-        }));
-      return regionData;
-    }).flat();
-  };
+  // Prepare improved bar chart data to avoid duplicate years
+  const freightCostsByYear = useMemo(() => 
+    prepareFreightCostsData(supplyChainData),
+  []);
+
+  // Define colors for the radar chart with more distinct colors
+  const RADAR_COLORS = ["#18453B", "#7A9B76", "#A2AAAD", "#FF6B35", "#004E89"];
 
   return (
     <div className="space-y-6">
@@ -274,7 +320,7 @@ const SupplyChain: React.FC = () => {
               <ChartContainer config={{}} className="h-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
-                    data={prepareRegionData("freightCosts")}
+                    data={freightCostsByYear}
                     margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
@@ -285,21 +331,11 @@ const SupplyChain: React.FC = () => {
                     {regions.map((region, index) => (
                       <Bar 
                         key={`bar-${region}`}
-                        dataKey="value" 
+                        dataKey={region} 
                         name={region} 
                         fill={index === 0 ? "#18453B" : index === 1 ? "#7A9B76" : "#A2AAAD"}
-                        stackId={region}
-                      >
-                        {prepareRegionData("freightCosts")
-                          .filter(item => item.region === region)
-                          .map((entry, i) => (
-                            <Cell 
-                              key={`cell-${i}-${region}`} 
-                              fill={index === 0 ? "#18453B" : index === 1 ? "#7A9B76" : "#A2AAAD"} 
-                              opacity={region === selectedRegion || selectedRegion === "all" ? 1 : 0.5}
-                            />
-                          ))}
-                      </Bar>
+                        opacity={region === selectedRegion || selectedRegion === "all" ? 1 : 0.5}
+                      />
                     ))}
                   </BarChart>
                 </ResponsiveContainer>
@@ -355,16 +391,18 @@ const SupplyChain: React.FC = () => {
         <CardHeader>
           <CardTitle>Supply Chain Metrics Comparison (2022)</CardTitle>
         </CardHeader>
-        <CardContent className="h-80">
+        <CardContent className="h-96">
           <ChartContainer config={{}} className="h-full">
             <ResponsiveContainer width="100%" height="100%">
-              <RadarChart outerRadius={120} width={600} height={300} data={radarData}>
+              <RadarChart outerRadius={150} width={600} height={300} data={radarData}>
                 <PolarGrid />
                 <PolarAngleAxis dataKey="region" />
-                <PolarRadiusAxis />
-                <Radar name="Container Volume" dataKey="Container Volume" stroke="#18453B" fill="#18453B" fillOpacity={0.6} />
-                <Radar name="Freight Costs" dataKey="Freight Costs" stroke="#7A9B76" fill="#7A9B76" fillOpacity={0.6} />
-                <Radar name="Delivery Time" dataKey="Delivery Time" stroke="#A2AAAD" fill="#A2AAAD" fillOpacity={0.6} />
+                <PolarRadiusAxis angle={30} domain={[0, 10]} />
+                <Radar name="Capacity" dataKey="Capacity" stroke="#18453B" fill="#18453B" fillOpacity={0.6} />
+                <Radar name="Cost Efficiency" dataKey="Cost Efficiency" stroke="#7A9B76" fill="#7A9B76" fillOpacity={0.6} />
+                <Radar name="Delivery Speed" dataKey="Delivery Speed" stroke="#A2AAAD" fill="#A2AAAD" fillOpacity={0.6} />
+                <Radar name="Growth Rate" dataKey="Growth Rate" stroke="#FF6B35" fill="#FF6B35" fillOpacity={0.6} />
+                <Radar name="Reliability" dataKey="Reliability" stroke="#004E89" fill="#004E89" fillOpacity={0.6} />
                 <Legend />
                 <ChartTooltip content={<ChartTooltipContent />} />
               </RadarChart>

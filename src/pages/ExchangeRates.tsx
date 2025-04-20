@@ -121,7 +121,7 @@ const ExchangeRates: React.FC = () => {
   // Get the latest and previous data for the currency cards
   const latestData = exchangeRateData[exchangeRateData.length - 1] || {};
   const previousData = exchangeRateData[exchangeRateData.length - 2] || {};
-  const lastActualDate = latestData.date;
+  const lastActualDate = latestData?.date || "";
 
   return (
     <div className="space-y-6">
