@@ -1,3 +1,4 @@
+
 import React from "react";
 import { 
   BarChart, 
@@ -82,6 +83,7 @@ const DASHBOARD_SOURCES = {
 const Dashboard: React.FC = () => {
   const latestIbexData = ibexOverTimeData[ibexOverTimeData.length - 1];
   
+  // Fixed type errors: we need to provide title as a string prop and use the React elements inside the component
   return (
     <div className="space-y-6">
       <TooltipProvider>
@@ -135,28 +137,27 @@ const Dashboard: React.FC = () => {
       </TooltipProvider>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <ChartCard title={
-          <div className="flex items-center justify-between">
-            <span>IBEX Scores Over Time</span>
-            <div className="flex items-center space-x-2">
-              <button aria-label="Download Data"
-                      onClick={() => downloadCSV(ibexOverTimeData, "ibex-scores.csv")}
-                      className="hover-scale rounded p-1 hover:bg-gray-100">
-                <Download size={16} className="text-muted-foreground" />
-              </button>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
-                    <Info size={16} className="text-muted-foreground" />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent side="top" className="text-xs max-w-xs">
-                  {DASHBOARD_SOURCES.ibex}
-                </PopoverContent>
-              </Popover>
-            </div>
-          </div>
-        }>
+        <ChartCard title="IBEX Scores Over Time"
+                  titleExtra={
+                    <div className="flex items-center space-x-2">
+                      <button aria-label="Download Data"
+                              onClick={() => downloadCSV(ibexOverTimeData, "ibex-scores.csv")}
+                              className="hover-scale rounded p-1 hover:bg-gray-100">
+                        <Download size={16} className="text-muted-foreground" />
+                      </button>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
+                            <Info size={16} className="text-muted-foreground" />
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent side="top" className="text-xs max-w-xs">
+                          {DASHBOARD_SOURCES.ibex}
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  }
+        >
           <LineChart
             data={ibexOverTimeData}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
@@ -174,28 +175,27 @@ const Dashboard: React.FC = () => {
           </LineChart>
         </ChartCard>
 
-        <ChartCard title={
-          <div className="flex items-center justify-between">
-            <span>State Activity Distribution</span>
-            <div className="flex items-center space-x-2">
-              <button aria-label="Download Data"
-                onClick={() => downloadCSV(stateDistributionData, "state-distribution.csv")}
-                className="hover-scale rounded p-1 hover:bg-gray-100">
-                <Download size={16} className="text-muted-foreground" />
-              </button>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
-                    <Info size={16} className="text-muted-foreground" />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent side="top" className="text-xs max-w-xs">
-                  {DASHBOARD_SOURCES.stateDist}
-                </PopoverContent>
-              </Popover>
-            </div>
-          </div>
-        }>
+        <ChartCard title="State Activity Distribution" 
+                  titleExtra={
+                    <div className="flex items-center space-x-2">
+                      <button aria-label="Download Data"
+                        onClick={() => downloadCSV(stateDistributionData, "state-distribution.csv")}
+                        className="hover-scale rounded p-1 hover:bg-gray-100">
+                        <Download size={16} className="text-muted-foreground" />
+                      </button>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
+                            <Info size={16} className="text-muted-foreground" />
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent side="top" className="text-xs max-w-xs">
+                          {DASHBOARD_SOURCES.stateDist}
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  }
+        >
           <PieChart>
             <Pie
               data={stateDistributionData}
@@ -216,28 +216,27 @@ const Dashboard: React.FC = () => {
         </ChartCard>
       </div>
 
-      <ChartCard title={
-        <div className="flex items-center justify-between">
-          <span>Market Performance</span>
-          <div className="flex items-center space-x-2">
-            <button aria-label="Download Data"
-              onClick={() => downloadCSV(annualStockData, "market-performance.csv")}
-              className="hover-scale rounded p-1 hover:bg-gray-100">
-              <Download size={16} className="text-muted-foreground" />
-            </button>
-            <Popover>
-              <PopoverTrigger asChild>
-                <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
-                  <Info size={16} className="text-muted-foreground" />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent side="top" className="text-xs max-w-xs">
-                {DASHBOARD_SOURCES.market}
-              </PopoverContent>
-            </Popover>
-          </div>
-        </div>
-      }>
+      <ChartCard title="Market Performance" 
+                titleExtra={
+                  <div className="flex items-center space-x-2">
+                    <button aria-label="Download Data"
+                      onClick={() => downloadCSV(annualStockData, "market-performance.csv")}
+                      className="hover-scale rounded p-1 hover:bg-gray-100">
+                      <Download size={16} className="text-muted-foreground" />
+                    </button>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
+                          <Info size={16} className="text-muted-foreground" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent side="top" className="text-xs max-w-xs">
+                        {DASHBOARD_SOURCES.market}
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                }
+      >
         <LineChart
           data={annualStockData}
           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
@@ -253,28 +252,27 @@ const Dashboard: React.FC = () => {
         </LineChart>
       </ChartCard>
 
-      <ChartCard title={
-        <div className="flex items-center justify-between">
-          <span>Economic Indicators: Major Economies</span>
-          <div className="flex items-center space-x-2">
-            <button aria-label="Download Data"
-              onClick={() => downloadCSV(economicData, "economic-indicators.csv")}
-              className="hover-scale rounded p-1 hover:bg-gray-100">
-              <Download size={16} className="text-muted-foreground" />
-            </button>
-            <Popover>
-              <PopoverTrigger asChild>
-                <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
-                  <Info size={16} className="text-muted-foreground" />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent side="top" className="text-xs max-w-xs">
-                {DASHBOARD_SOURCES.economic}
-              </PopoverContent>
-            </Popover>
-          </div>
-        </div>
-      }>
+      <ChartCard title="Economic Indicators: Major Economies" 
+                titleExtra={
+                  <div className="flex items-center space-x-2">
+                    <button aria-label="Download Data"
+                      onClick={() => downloadCSV(economicData, "economic-indicators.csv")}
+                      className="hover-scale rounded p-1 hover:bg-gray-100">
+                      <Download size={16} className="text-muted-foreground" />
+                    </button>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button aria-label="Chart Info" className="hover-scale rounded p-1 hover:bg-gray-100">
+                          <Info size={16} className="text-muted-foreground" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent side="top" className="text-xs max-w-xs">
+                        {DASHBOARD_SOURCES.economic}
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                }
+      >
         <BarChart
           data={economicData}
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}

@@ -1,30 +1,24 @@
 
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ResponsiveContainer } from "recharts";
-import React, { ReactElement } from "react";
 
 interface ChartCardProps {
   title: string;
-  children: ReactElement;
-  className?: string;
-  height?: string;
+  titleExtra?: React.ReactNode;
+  children: React.ReactNode;
 }
 
-export const ChartCard: React.FC<ChartCardProps> = ({
-  title,
-  children,
-  className,
-  height = "h-80"
-}) => {
+export const ChartCard: React.FC<ChartCardProps> = ({ title, titleExtra, children }) => {
   return (
-    <Card className={className}>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
+    <Card>
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg">{title}</CardTitle>
+          {titleExtra}
+        </div>
       </CardHeader>
-      <CardContent className={height}>
-        <ResponsiveContainer width="100%" height="100%">
-          {children}
-        </ResponsiveContainer>
+      <CardContent className="pt-2">
+        {children}
       </CardContent>
     </Card>
   );
