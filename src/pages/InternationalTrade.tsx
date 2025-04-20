@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -20,6 +19,7 @@ import {
 import { internationalTradeData } from "@/data/marketData";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShipIcon, ArrowUpDown, BarChart4 } from "lucide-react";
+import { ChartActions } from "@/components/ui/ChartActions";
 
 const COLORS = ["#18453B", "#7A9B76", "#A2AAAD"];
 
@@ -54,6 +54,9 @@ const InternationalTrade: React.FC = () => {
     name: item.country,
     value: item.balance
   }));
+
+  const TRADE_SOURCE =
+  "Data Source: World Bank International Trade Indicators, country groups 2018-2022, based on World Development Indicators.";
 
   return (
     <div className="space-y-6">
@@ -151,6 +154,30 @@ const InternationalTrade: React.FC = () => {
           <Card>
             <CardHeader>
               <CardTitle>Exports and Imports by Region ({selectedYear})</CardTitle>
+              <div className="absolute right-6 top-6">
+                <ChartActions
+                  onDownload={() => {
+                    // yearData is in scope
+                    const filename = `trade-exports-imports-${selectedYear}.csv`;
+                    if (!yearData?.length) return;
+                    const csvRows = [];
+                    const headers = Object.keys(yearData[0]);
+                    csvRows.push(headers.join(","));
+                    for (const row of yearData) {
+                      const vals = headers.map(header => JSON.stringify(row[header] ?? ""));
+                      csvRows.push(vals.join(","));
+                    }
+                    const blob = new Blob([csvRows.join("\n")], { type: "text/csv" });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = filename;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                  }}
+                  info={TRADE_SOURCE}
+                />
+              </div>
             </CardHeader>
             <CardContent className="h-80">
               <ChartContainer config={{}} className="h-full">
@@ -177,6 +204,30 @@ const InternationalTrade: React.FC = () => {
           <Card>
             <CardHeader>
               <CardTitle>Trade Balance by Region ({selectedYear})</CardTitle>
+              <div className="absolute right-6 top-6">
+                <ChartActions
+                  onDownload={() => {
+                    // Download balances
+                    const filename = `trade-balance-${selectedYear}.csv`;
+                    if (!yearData?.length) return;
+                    const csvRows = [];
+                    const headers = Object.keys(yearData[0]);
+                    csvRows.push(headers.join(","));
+                    for (const row of yearData) {
+                      const vals = headers.map(header => JSON.stringify(row[header] ?? ""));
+                      csvRows.push(vals.join(","));
+                    }
+                    const blob = new Blob([csvRows.join("\n")], { type: "text/csv" });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = filename;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                  }}
+                  info={TRADE_SOURCE}
+                />
+              </div>
             </CardHeader>
             <CardContent className="h-80">
               <ChartContainer config={{}} className="h-full">
@@ -210,6 +261,31 @@ const InternationalTrade: React.FC = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Regional Distribution of Exports ({selectedYear})</CardTitle>
+                <div className="absolute right-6 top-6">
+                  <ChartActions
+                    onDownload={() => {
+                      // Download pie exports
+                      const pieData = tradeTotals.filter(item => item.type === 'Exports');
+                      const filename = `trade-exports-distribution-${selectedYear}.csv`;
+                      if (!pieData?.length) return;
+                      const csvRows = [];
+                      const headers = Object.keys(pieData[0]);
+                      csvRows.push(headers.join(","));
+                      for (const row of pieData) {
+                        const vals = headers.map(header => JSON.stringify(row[header] ?? ""));
+                        csvRows.push(vals.join(","));
+                      }
+                      const blob = new Blob([csvRows.join("\n")], { type: "text/csv" });
+                      const url = window.URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = filename;
+                      a.click();
+                      window.URL.revokeObjectURL(url);
+                    }}
+                    info={TRADE_SOURCE}
+                  />
+                </div>
               </CardHeader>
               <CardContent className="h-80">
                 <ChartContainer config={{}} className="h-full">
@@ -241,6 +317,31 @@ const InternationalTrade: React.FC = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Regional Distribution of Imports ({selectedYear})</CardTitle>
+                <div className="absolute right-6 top-6">
+                  <ChartActions
+                    onDownload={() => {
+                      // Download pie imports
+                      const pieData = tradeTotals.filter(item => item.type === 'Imports');
+                      const filename = `trade-imports-distribution-${selectedYear}.csv`;
+                      if (!pieData?.length) return;
+                      const csvRows = [];
+                      const headers = Object.keys(pieData[0]);
+                      csvRows.push(headers.join(","));
+                      for (const row of pieData) {
+                        const vals = headers.map(header => JSON.stringify(row[header] ?? ""));
+                        csvRows.push(vals.join(","));
+                      }
+                      const blob = new Blob([csvRows.join("\n")], { type: "text/csv" });
+                      const url = window.URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = filename;
+                      a.click();
+                      window.URL.revokeObjectURL(url);
+                    }}
+                    info={TRADE_SOURCE}
+                  />
+                </div>
               </CardHeader>
               <CardContent className="h-80">
                 <ChartContainer config={{}} className="h-full">

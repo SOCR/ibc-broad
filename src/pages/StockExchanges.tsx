@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -21,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ChartActions } from "@/components/ui/ChartActions";
 
 const stockExchanges = {
   nyse: { name: "New York Stock Exchange", color: "#18453B" },
@@ -92,6 +92,30 @@ const StockExchanges: React.FC = () => {
   // Get the most recent data for the summary cards
   const latestData = stockExchangeData[stockExchangeData.length - 1];
   const previousYearData = stockExchangeData[stockExchangeData.length - 2];
+
+  // Chart data source info
+  const CHART_SOURCES = {
+    exchanges: "Data Source: Major international stock exchange indices, historical data 1950-2023 from Yahoo Finance.",
+  };
+
+  // CSV Helper
+  function downloadCSV(data: any[], filename = "stock-exchanges.csv") {
+    if (!data?.length) return;
+    const csvRows = [];
+    const headers = Object.keys(data[0]);
+    csvRows.push(headers.join(","));
+    for (const row of data) {
+      const vals = headers.map(header => JSON.stringify(row[header] ?? ""));
+      csvRows.push(vals.join(","));
+    }
+    const blob = new Blob([csvRows.join("\n")], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
 
   return (
     <div className="space-y-6">
@@ -175,6 +199,12 @@ const StockExchanges: React.FC = () => {
           <CardTitle>
             Stock Exchange Index Values {compareMode ? `(Normalized to ${baseYear} = 100%)` : `(1950-2023)`}
           </CardTitle>
+          <div className="absolute right-6 top-6">
+            <ChartActions
+              onDownload={() => downloadCSV(displayData, compareMode ? "stock-exchanges-normalized.csv" : "stock-exchanges.csv")}
+              info={CHART_SOURCES.exchanges}
+            />
+          </div>
         </CardHeader>
         <CardContent className="h-[500px]">
           <ChartContainer config={{}} className="h-full">

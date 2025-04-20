@@ -12,6 +12,7 @@ import { createMultiMethodForecast } from "@/utils/forecasting";
 import { CurrencyCard } from "@/components/exchange/CurrencyCard";
 import { ExchangeRateChart } from "@/components/exchange/ExchangeRateChart";
 import { ForecastInfo } from "@/components/exchange/ForecastInfo";
+import { ChartActions } from "@/components/ui/ChartActions";
 
 // Define currencies data
 const currencies = [
@@ -123,6 +124,28 @@ const ExchangeRates: React.FC = () => {
   const previousData = exchangeRateData.length > 1 ? exchangeRateData[exchangeRateData.length - 2] : { date: '' };
   const lastActualDate = latestData.date || "";
 
+  const chartSource =
+  "Data Source: Monthly exchange rates, Bank of International Settlements and US Federal Reserve, 2018–2023.";
+
+// Helper for download
+function downloadCSV(data: any[], filename = "exchange-rates.csv") {
+  if (!data?.length) return;
+  const csvRows = [];
+  const headers = Object.keys(data[0]);
+  csvRows.push(headers.join(","));
+  for (const row of data) {
+    const vals = headers.map(header => JSON.stringify(row[header] ?? ""));
+    csvRows.push(vals.join(","));
+  }
+  const blob = new Blob([csvRows.join("\n")], { type: "text/csv" });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  window.URL.revokeObjectURL(url);
+}
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -169,7 +192,15 @@ const ExchangeRates: React.FC = () => {
         })}
       </div>
       
-      <ExchangeRateChart
+      <div className="flex items-center justify-between">
+    <h2 className="text-lg font-semibold">Exchange Rates Over Time</h2>
+    <ChartActions
+      onDownload={() => downloadCSV(getChartData, "exchange-rates.csv")}
+      info={chartSource}
+      disabled={getChartData.length === 0}
+    />
+  </div>
+  <ExchangeRateChart
         chartData={getChartData}
         currencies={currencies}
         selectedDateRange={selectedDateRange}
