@@ -1,8 +1,7 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer } from "@/components/ui/chart";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Tooltip } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Tooltip, BarChart, Bar } from "recharts";
 import { economicIndicators } from "@/data/marketData";
 
 export function TrendsTab() {
@@ -13,7 +12,7 @@ export function TrendsTab() {
 
   // Process data for GDP growth calculation properly to avoid duplicates
   const gdpGrowthData = React.useMemo(() => {
-    const result = [];
+    const yearGroups = new Map();
     
     // Process each country separately
     ["USA", "EU", "China"].forEach(country => {
@@ -29,63 +28,58 @@ export function TrendsTab() {
         // Calculate percentage growth
         const growth = ((currentYear.gdp - prevYear.gdp) / prevYear.gdp) * 100;
         
-        result.push({
-          country,
-          year: currentYear.year,
-          prevYear: prevYear.year,
-          growth: parseFloat(growth.toFixed(2)),
-          label: `${currentYear.year} (${country})` // Create unique labels
-        });
+        // Group by year
+        if (!yearGroups.has(currentYear.year)) {
+          yearGroups.set(currentYear.year, {
+            year: currentYear.year,
+          });
+        }
+        
+        // Add country-specific growth to the year group
+        yearGroups.get(currentYear.year)[country] = parseFloat(growth.toFixed(2));
       }
     });
     
-    // Sort by year and then by country for consistent display
-    return result.sort((a, b) => a.year - b.year || a.country.localeCompare(b.country));
+    // Convert map to array and sort by year
+    return Array.from(yearGroups.values()).sort((a, b) => a.year - b.year);
   }, [sortedEconomicIndicators]);
 
   return (
     <div className="space-y-6">
+      
       <Card>
         <CardHeader>
-          <CardTitle>GDP Growth Rate by Country (%)</CardTitle>
+          <CardTitle>GDP Growth Rate</CardTitle>
         </CardHeader>
         <CardContent className="h-80">
           <ChartContainer config={{}} className="h-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+              <BarChart
+                data={gdpGrowthData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   dataKey="year"
-                  type="number"
-                  domain={['dataMin', 'dataMax']}
-                  allowDuplicatedCategory={false}
+                  tick={{
+                    fontSize: 12
+                  }}
                 />
                 <YAxis />
                 <Tooltip 
-                  formatter={(value, name, props) => [`${value}%`, props.payload.country]}
-                  labelFormatter={(value) => `Year: ${value}`}
+                  formatter={(value, name) => [`${value}%`, name]}
+                  labelFormatter={label => `Year: ${label}`}
                 />
                 <Legend />
-                {["USA", "EU", "China"].map((country, index) => {
-                  const color = index === 0 ? "#18453B" : index === 1 ? "#1E88E5" : "#D81B60";
-                  const countryData = gdpGrowthData.filter(d => d.country === country);
-                  
-                  return (
-                    <Line
-                      key={country}
-                      data={countryData}
-                      name={`${country} Growth`}
-                      type="monotone"
-                      dataKey="growth"
-                      stroke={color}
-                      strokeWidth={2}
-                      dot={{ r: 4 }}
-                      activeDot={{ r: 6 }}
-                      isAnimationActive={false} // Disable animation to help with performance
-                    />
-                  );
-                })}
-              </LineChart>
+                {["USA", "EU", "China"].map((country, idx) => (
+                  <Bar
+                    key={country}
+                    dataKey={country}
+                    name={country}
+                    fill={idx === 0 ? "#18453B" : idx === 1 ? "#1E88E5" : "#D81B60"}
+                  />
+                ))}
+              </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
         </CardContent>
