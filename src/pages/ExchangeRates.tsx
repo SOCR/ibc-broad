@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import { exchangeRateData, forecastMethods } from "@/data/marketData";
 import { dateRanges } from "@/data/constants";
@@ -25,7 +24,8 @@ const currencies = [
 ];
 
 const ExchangeRates: React.FC = () => {
-  const [selectedDateRange, setSelectedDateRange] = useState<string>("1y");
+  // Set default to "3y" (3 years)
+  const [selectedDateRange, setSelectedDateRange] = useState<string>("3y");
   const [enableForecast, setEnableForecast] = useState<boolean>(false);
   const [forecastMethod, setForecastMethod] = useState<string>("linear");
   const [forecastYears, setForecastYears] = useState<number>(2);
